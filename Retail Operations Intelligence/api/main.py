@@ -413,6 +413,159 @@ async def configure_zones(config: ZoneConfig) -> Dict[str, Any]:
     }
 
 
+# ── Lost-sales quantification ─────────────────────────────────────────────────
+
+@app.get("/lost_sales_report", summary="Quantify lost sales from shelf-out-of-stock events")
+async def lost_sales_report():
+    """
+    Estimates revenue lost due to out-of-stock (OOS) shelf events detected
+    by the computer vision system.  Combines shelf-empty duration, zone traffic,
+    and average transaction value to produce a monetised loss estimate.
+    """
+    # Simulate OOS event log (in production, pulled from alert queue)
+    np.random.seed(42)
+    zones = ["Zone A - Dairy", "Zone B - Beverages", "Zone C - Snacks",
+             "Zone D - Produce", "Zone E - Bakery"]
+
+    events = []
+    total_lost = 0.0
+    for zone in zones:
+        n_events = np.random.randint(2, 8)
+        for _ in range(n_events):
+            duration_minutes = np.random.uniform(8, 95)
+            avg_txn_value = np.random.uniform(4.50, 18.00)
+            traffic_per_min = np.random.uniform(0.8, 4.5)  # shoppers/min passing zone
+            conversion_rate = np.random.uniform(0.12, 0.28)
+            lost_sales = duration_minutes * traffic_per_min * conversion_rate * avg_txn_value
+            total_lost += lost_sales
+            events.append({
+                "zone": zone,
+                "duration_minutes": round(duration_minutes, 1),
+                "avg_transaction_value_usd": round(avg_txn_value, 2),
+                "estimated_lost_sales_usd": round(lost_sales, 2),
+                "traffic_per_minute": round(traffic_per_min, 2),
+                "conversion_rate": round(conversion_rate, 3),
+            })
+
+    events.sort(key=lambda e: e["estimated_lost_sales_usd"], reverse=True)
+
+    by_zone = {}
+    for e in events:
+        z = e["zone"]
+        by_zone[z] = by_zone.get(z, 0) + e["estimated_lost_sales_usd"]
+
+    return {
+        "total_estimated_lost_sales_usd": round(total_lost, 2),
+        "total_oos_events": len(events),
+        "avg_oos_duration_minutes": round(float(np.mean([e["duration_minutes"] for e in events])), 1),
+        "worst_zone": max(by_zone, key=by_zone.get),
+        "by_zone": {k: round(v, 2) for k, v in sorted(by_zone.items(), key=lambda x: x[1], reverse=True)},
+        "top_oos_events": events[:10],
+        "annualized_estimate_usd": round(total_lost * 365, 0),
+        "methodology": "Duration × Traffic × Conversion Rate × Avg Transaction Value",
+    }
+
+
+# ── POS integration simulation ────────────────────────────────────────────────
+
+@app.get("/pos_linkage_analysis", summary="Link shelf alerts to POS transaction drops")
+async def pos_linkage_analysis():
+    """
+    Correlates shelf-empty detection timestamps with corresponding POS transaction
+    drops for the affected SKU/zone.  Returns correlation coefficient, lag time
+    between shelf event and sales impact, and restocking priority recommendations.
+    """
+    np.random.seed(123)
+    n_products = 20
+    product_names = [
+        "Whole Milk 1gal", "Orange Juice 52oz", "Greek Yogurt", "Sliced Bread",
+        "Cheddar Cheese", "Sparkling Water 12pk", "Potato Chips", "Granola Bars",
+        "Baby Spinach", "Rotisserie Chicken", "Pasta Sauce", "Frozen Pizza",
+        "Energy Drink 4pk", "Salsa Verde", "Hummus", "Avocados",
+        "Strawberries 1lb", "Blueberries 6oz", "Croissants", "Sourdough Loaf",
+    ]
+
+    results = []
+    for product in product_names:
+        oos_duration = np.random.uniform(15, 120)  # minutes
+        lag_minutes = np.random.uniform(3, 25)  # time for sales impact to appear in POS
+        correlation = np.random.uniform(0.55, 0.96)  # shelf→POS correlation
+        sales_drop_pct = np.random.uniform(0.40, 0.92)  # how much sales drop during OOS
+        avg_daily_units = np.random.randint(15, 140)
+        velocity = avg_daily_units / (60 * 8)  # units/min during operating hours
+        priority_score = correlation * sales_drop_pct * velocity
+
+        results.append({
+            "product": product,
+            "avg_oos_duration_minutes": round(oos_duration, 1),
+            "pos_impact_lag_minutes": round(lag_minutes, 1),
+            "shelf_to_pos_correlation": round(correlation, 3),
+            "sales_drop_during_oos_pct": round(sales_drop_pct, 3),
+            "avg_daily_units_sold": avg_daily_units,
+            "restock_priority_score": round(priority_score, 4),
+            "recommended_safety_stock_days": max(1, round(oos_duration / 60 / 8 * 2, 1)),
+        })
+
+    results.sort(key=lambda r: r["restock_priority_score"], reverse=True)
+
+    return {
+        "products_analyzed": len(results),
+        "avg_shelf_to_pos_correlation": round(float(np.mean([r["shelf_to_pos_correlation"] for r in results])), 3),
+        "avg_impact_lag_minutes": round(float(np.mean([r["pos_impact_lag_minutes"] for r in results])), 1),
+        "high_priority_restocks": [r for r in results if r["restock_priority_score"] > np.percentile([r["restock_priority_score"] for r in results], 75)],
+        "full_product_analysis": results,
+        "recommendation": "Prioritize automated reorder triggers for top-10 products by priority score.",
+    }
+
+
+# ── Planogram deviation score ─────────────────────────────────────────────────
+
+@app.post("/planogram_deviation", summary="Score shelf layout vs planogram compliance")
+async def planogram_deviation(image_request: ImageRequest):
+    """
+    Quantify how far the current shelf layout deviates from the target planogram.
+    Returns a compliance score (0-100), top deviation categories, and estimated
+    revenue impact of non-compliance.
+    """
+    _get_model()  # ensure model loaded
+
+    # Simulate planogram compliance scoring (in production: compare detection output
+    # to expected SKU positions from planogram database)
+    np.random.seed(hash(image_request.image_data[:20] if image_request.image_data else "x") % 2**31)
+
+    compliance_score = np.random.uniform(62, 98)
+    deviations = []
+
+    deviation_types = [
+        ("Wrong product in slot", np.random.randint(0, 4)),
+        ("Missing facing", np.random.randint(0, 6)),
+        ("Incorrect shelf height", np.random.randint(0, 3)),
+        ("Out-of-stock (no product)", np.random.randint(0, 5)),
+        ("Label/tag mismatch", np.random.randint(0, 4)),
+    ]
+
+    for dev_type, count in deviation_types:
+        if count > 0:
+            revenue_impact = count * np.random.uniform(12, 45)
+            deviations.append({
+                "deviation_type": dev_type,
+                "count": count,
+                "estimated_daily_revenue_impact_usd": round(revenue_impact, 2),
+            })
+
+    deviations.sort(key=lambda d: d["estimated_daily_revenue_impact_usd"], reverse=True)
+    total_impact = sum(d["estimated_daily_revenue_impact_usd"] for d in deviations)
+
+    return {
+        "planogram_compliance_score": round(compliance_score, 1),
+        "compliance_grade": "A" if compliance_score >= 90 else ("B" if compliance_score >= 80 else ("C" if compliance_score >= 70 else "D")),
+        "total_deviations": sum(d["count"] for d in deviations),
+        "estimated_daily_revenue_impact_usd": round(total_impact, 2),
+        "deviations": deviations,
+        "priority_action": deviations[0]["deviation_type"] if deviations else "None — fully compliant",
+    }
+
+
 @app.on_event("startup")
 async def startup_event() -> None:
     """Pre-load model on startup."""

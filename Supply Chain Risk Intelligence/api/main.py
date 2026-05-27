@@ -418,6 +418,201 @@ async def systemic_risk_report(top_n: int = Query(20, ge=1, le=100)) -> Dict[str
     }
 
 
+# ── Cascading failure simulator ───────────────────────────────────────────────
+
+@app.get("/cascade_simulation/{company_id}")
+async def cascade_simulation(
+    company_id: str,
+    failure_threshold: float = Query(0.60, ge=0.0, le=1.0, description="Distress probability to trigger cascade"),
+    max_hops: int = Query(3, ge=1, le=5, description="Max propagation depth"),
+) -> Dict[str, Any]:
+    """
+    Simulate cascading supply chain failure starting from a single company.
+    Uses BFS propagation: a distressed company (prob > threshold) infects
+    its downstream buyers with a fraction of its distress score.
+    Returns the full contagion tree, impacted revenue estimate, and risk heatmap.
+    """
+    if _supply_chain_graph is None or _reference_df is None or _company_probas is None:
+        raise HTTPException(status_code=503, detail="Supply chain data not loaded.")
+
+    # Map company_id to graph node index
+    id_col = "company_id" if "company_id" in _reference_df.columns else _reference_df.columns[0]
+    mask = _reference_df[id_col].astype(str) == str(company_id)
+    if not mask.any():
+        raise HTTPException(status_code=404, detail=f"Company '{company_id}' not found.")
+
+    origin_idx = int(_reference_df[mask].index[0])
+    origin_prob = float(_company_probas[origin_idx]) if origin_idx < len(_company_probas) else 0.5
+
+    if origin_prob < failure_threshold:
+        return {
+            "company_id": company_id,
+            "origin_distress_probability": round(origin_prob, 4),
+            "cascade_triggered": False,
+            "message": f"Distress probability {origin_prob:.3f} below trigger threshold {failure_threshold}.",
+        }
+
+    # BFS cascade
+    visited = {origin_idx: origin_prob}
+    frontier = [origin_idx]
+    cascade_tree = []
+    hop = 0
+
+    contagion_decay = 0.55  # each hop transmits 55% of distress signal
+
+    while frontier and hop < max_hops:
+        next_frontier = []
+        for node in frontier:
+            node_prob = visited[node]
+            transmitted_prob = node_prob * contagion_decay
+            if transmitted_prob < 0.15:
+                continue
+            neighbors = list(_supply_chain_graph.successors(node)) if _supply_chain_graph.is_directed() else list(_supply_chain_graph.neighbors(node))
+            for nbr in neighbors[:10]:  # cap fan-out
+                if nbr not in visited:
+                    combined = min(1.0, (_company_probas[nbr] if nbr < len(_company_probas) else 0.3) + transmitted_prob * 0.4)
+                    visited[nbr] = combined
+                    next_frontier.append(nbr)
+                    cascade_tree.append({
+                        "from_node": int(node),
+                        "to_node": int(nbr),
+                        "transmitted_distress": round(transmitted_prob, 4),
+                        "combined_distress": round(combined, 4),
+                        "hop": hop + 1,
+                    })
+        frontier = next_frontier
+        hop += 1
+
+    n_impacted = len(visited) - 1
+    high_risk_impacted = sum(1 for v in visited.values() if v > 0.60)
+
+    # Revenue at risk (approximate from company_revenue if present)
+    revenue_at_risk = 0.0
+    if "revenue" in _reference_df.columns:
+        impacted_revs = _reference_df.iloc[list(visited.keys())]["revenue"].sum()
+        revenue_at_risk = float(impacted_revs * 0.35)  # 35% revenue disruption estimate
+
+    return {
+        "company_id": company_id,
+        "origin_distress_probability": round(origin_prob, 4),
+        "cascade_triggered": True,
+        "total_companies_impacted": n_impacted,
+        "high_risk_after_cascade": high_risk_impacted,
+        "max_propagation_depth": max_hops,
+        "estimated_revenue_at_risk_usd": round(revenue_at_risk, 0),
+        "contagion_tree": cascade_tree[:100],
+        "impacted_node_distress": {str(k): round(v, 4) for k, v in sorted(visited.items(), key=lambda x: x[1], reverse=True)[:20]},
+    }
+
+
+# ── ESG risk overlay ──────────────────────────────────────────────────────────
+
+@app.get("/esg_risk_overlay")
+async def esg_risk_overlay() -> Dict[str, Any]:
+    """
+    Overlay ESG (Environmental, Social, Governance) risk scores onto the
+    financial distress model to produce a composite sustainability-adjusted
+    risk score.  Companies with high financial + high ESG risk are flagged
+    as double-exposure candidates.
+    """
+    if _reference_df is None or _company_probas is None:
+        raise HTTPException(status_code=503, detail="Portfolio data not loaded.")
+
+    df = _reference_df.copy()
+    n = len(df)
+    np.random.seed(42)
+
+    # Simulate ESG scores (0=worst, 100=best) correlated with company size/sector
+    # In production these would come from MSCI, Sustainalytics, or Bloomberg ESG feeds
+    esg_e = np.random.beta(2, 3, n) * 100   # Environmental
+    esg_s = np.random.beta(2.5, 2.5, n) * 100  # Social
+    esg_g = np.random.beta(3, 2, n) * 100   # Governance
+    composite_esg = (esg_e * 0.35 + esg_s * 0.30 + esg_g * 0.35)
+    esg_risk = 100 - composite_esg  # invert: higher = more ESG risk
+
+    financial_risk = _company_probas[:n] * 100 if len(_company_probas) >= n else np.random.beta(2, 5, n) * 100
+
+    # Quadrant classification
+    fin_median = np.median(financial_risk)
+    esg_median = np.median(esg_risk)
+
+    quadrants = {
+        "double_exposure": int(((financial_risk > fin_median) & (esg_risk > esg_median)).sum()),
+        "financial_only": int(((financial_risk > fin_median) & (esg_risk <= esg_median)).sum()),
+        "esg_only": int(((financial_risk <= fin_median) & (esg_risk > esg_median)).sum()),
+        "low_risk": int(((financial_risk <= fin_median) & (esg_risk <= esg_median)).sum()),
+    }
+
+    top_double = np.argsort(financial_risk + esg_risk)[::-1][:10]
+    id_col = "company_id" if "company_id" in df.columns else df.columns[0]
+    name_col = "company_name" if "company_name" in df.columns else id_col
+
+    worst_companies = []
+    for idx in top_double:
+        if idx < len(df):
+            worst_companies.append({
+                "company": str(df.iloc[idx][name_col]),
+                "financial_risk_score": round(float(financial_risk[idx]), 1),
+                "esg_risk_score": round(float(esg_risk[idx]), 1),
+                "composite_risk": round(float((financial_risk[idx] + esg_risk[idx]) / 2), 1),
+                "environmental_score": round(float(esg_e[idx]), 1),
+                "social_score": round(float(esg_s[idx]), 1),
+                "governance_score": round(float(esg_g[idx]), 1),
+            })
+
+    return {
+        "portfolio_size": n,
+        "quadrant_breakdown": quadrants,
+        "portfolio_avg_esg_risk": round(float(esg_risk.mean()), 1),
+        "portfolio_avg_financial_risk": round(float(financial_risk.mean()), 1),
+        "top_double_exposure_companies": worst_companies,
+        "esg_data_source": "Simulated (MSCI/Sustainalytics integration point)",
+        "note": "Double-exposure companies require enhanced due diligence and diversification review.",
+    }
+
+
+# ── Scenario stress test ──────────────────────────────────────────────────────
+
+@app.get("/supply_shock_scenarios")
+async def supply_shock_scenarios() -> Dict[str, Any]:
+    """
+    Model portfolio distress rate shifts under macro supply shock scenarios:
+    - Geopolitical disruption (semiconductor shortage)
+    - Energy price spike (+50%)
+    - Logistics collapse (port blockage)
+    - Credit tightening (rates +200bps)
+    """
+    if _company_probas is None:
+        raise HTTPException(status_code=503, detail="Portfolio not loaded.")
+
+    base_rate = float(_company_probas.mean())
+    n = len(_company_probas)
+
+    scenarios = {
+        "baseline": {"shock": 0.00, "description": "Current conditions"},
+        "geopolitical_disruption": {"shock": 0.08, "description": "Semiconductor/rare-earth export restrictions"},
+        "energy_price_spike_50pct": {"shock": 0.06, "description": "Energy costs +50% — manufacturing sectors most exposed"},
+        "logistics_collapse": {"shock": 0.11, "description": "Major port blockage — 3–6 week lead time spike"},
+        "credit_tightening_200bps": {"shock": 0.09, "description": "Interest rate +200bps — highly leveraged suppliers most at risk"},
+        "combined_severe": {"shock": 0.22, "description": "All shocks simultaneously (tail risk scenario)"},
+    }
+
+    results = {}
+    for name, cfg in scenarios.items():
+        shocked_probas = np.clip(_company_probas + cfg["shock"], 0.0, 1.0)
+        distress_rate = float((shocked_probas > 0.50).mean())
+        high_risk_n = int((shocked_probas > 0.70).sum())
+        results[name] = {
+            "description": cfg["description"],
+            "distress_rate": round(distress_rate, 4),
+            "distress_rate_delta": round(distress_rate - base_rate, 4),
+            "n_high_risk_companies": high_risk_n,
+            "avg_portfolio_distress_prob": round(float(shocked_probas.mean()), 4),
+        }
+
+    return {"baseline_distress_rate": round(base_rate, 4), "scenarios": results, "n_companies": n}
+
+
 @app.get("/health")
 async def health_check() -> Dict[str, str]:
     return {"status": "healthy", "service": "Financial Distress & Supply Chain Risk API"}

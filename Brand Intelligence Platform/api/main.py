@@ -423,6 +423,168 @@ async def competitive_benchmark(top_n: int = 20):
 
 
 # ---------------------------------------------------------------------------
+# Crisis velocity anomaly detection
+# ---------------------------------------------------------------------------
+
+@app.get("/crisis_velocity", summary="Real-time crisis velocity anomaly detection")
+async def crisis_velocity(window_hours: int = 24, sensitivity: float = 2.0):
+    """
+    Detect whether brand sentiment is experiencing an anomalous negative velocity.
+    Uses a rolling z-score on hourly sentiment to flag if the rate of decline
+    exceeds `sensitivity` standard deviations from historical baseline.
+    Returns severity level, estimated time to full crisis, and recommended actions.
+    """
+    if _state.df is None:
+        raise HTTPException(status_code=503, detail="Data not loaded")
+
+    df = _state.df.copy()
+    date_col = next((c for c in ["date", "review_date", "timestamp"] if c in df.columns), None)
+    sent_col = "compound_sentiment" if "compound_sentiment" in df.columns else "stars"
+
+    if date_col is None or sent_col not in df.columns:
+        raise HTTPException(status_code=422, detail="date and sentiment columns required")
+
+    df[date_col] = pd.to_datetime(df[date_col], errors="coerce")
+    df = df.dropna(subset=[date_col]).sort_values(date_col)
+
+    # Create daily time series
+    daily = (
+        df.groupby(df[date_col].dt.date)[sent_col]
+        .agg(["mean", "count"])
+        .reset_index()
+    )
+    daily.columns = ["date", "avg_sentiment", "volume"]
+
+    if len(daily) < 14:
+        return {"status": "insufficient_data", "message": "Need at least 14 days of data."}
+
+    # Rolling baseline (28-day window)
+    daily["rolling_mean"] = daily["avg_sentiment"].rolling(28, min_periods=7).mean()
+    daily["rolling_std"] = daily["avg_sentiment"].rolling(28, min_periods=7).std()
+
+    # Z-score of recent period vs baseline
+    recent = daily.tail(window_hours // 24 if window_hours >= 24 else 1)
+    recent_mean = float(recent["avg_sentiment"].mean())
+    baseline_mean = float(daily["rolling_mean"].iloc[-max(1, len(daily) - window_hours // 24 - 1)])
+    baseline_std = float(daily["rolling_std"].iloc[-1]) if not pd.isna(daily["rolling_std"].iloc[-1]) else 0.1
+
+    z_score = (recent_mean - baseline_mean) / (baseline_std + 1e-6)
+    velocity = float(recent["avg_sentiment"].diff().mean()) if len(recent) > 1 else 0.0
+
+    # Severity classification
+    if z_score < -3.0 or (velocity < -0.05 and z_score < -2.0):
+        severity = "CRITICAL"
+        crisis_probability = 0.92
+        est_hours_to_crisis = max(1, int(abs(recent_mean) / (abs(velocity) + 0.01) * 24))
+    elif z_score < -sensitivity:
+        severity = "WARNING"
+        crisis_probability = 0.55
+        est_hours_to_crisis = max(6, int(abs(recent_mean) / (abs(velocity) + 0.01) * 48))
+    elif z_score < -1.0:
+        severity = "WATCH"
+        crisis_probability = 0.22
+        est_hours_to_crisis = 72
+    else:
+        severity = "NORMAL"
+        crisis_probability = 0.04
+        est_hours_to_crisis = None
+
+    # Volume spike detection (sudden high-volume negative reviews = viral crisis)
+    recent_volume = float(recent["volume"].mean())
+    baseline_volume = float(daily["volume"].rolling(28, min_periods=7).mean().iloc[-1])
+    volume_spike = recent_volume > baseline_volume * 2.0
+
+    actions = {
+        "CRITICAL": [
+            "Immediately brief executive communications team",
+            "Activate crisis response protocol — prepare public statement within 2 hours",
+            "Monitor social media channels for amplification",
+            "Identify root cause from 1-star reviews in last 24 hours",
+            "Prepare product/service hold if safety-related",
+        ],
+        "WARNING": [
+            "Alert brand manager and customer success leads",
+            "Review top negative reviews for emerging theme",
+            "Prepare draft response templates",
+            "Increase monitoring cadence to every 2 hours",
+        ],
+        "WATCH": [
+            "Flag for next daily brand review meeting",
+            "Monitor topic distribution for emerging negative themes",
+        ],
+        "NORMAL": ["Continue standard monitoring cadence"],
+    }
+
+    return {
+        "severity": severity,
+        "crisis_probability": round(crisis_probability, 3),
+        "z_score": round(z_score, 3),
+        "sentiment_velocity": round(velocity, 4),
+        "volume_spike_detected": volume_spike,
+        "recent_avg_sentiment": round(recent_mean, 4),
+        "baseline_avg_sentiment": round(baseline_mean, 4),
+        "estimated_hours_to_full_crisis": est_hours_to_crisis,
+        "window_hours": window_hours,
+        "recommended_actions": actions[severity],
+        "monitoring_timestamp": pd.Timestamp.now().isoformat(),
+    }
+
+
+@app.get("/sentiment_forecast", summary="7-day sentiment forecast")
+async def sentiment_forecast(horizon_days: int = 7):
+    """
+    Extrapolate brand sentiment trend using exponential smoothing.
+    Returns point forecast and 80% prediction intervals for the next N days.
+    """
+    if _state.df is None:
+        raise HTTPException(status_code=503, detail="Data not loaded")
+
+    df = _state.df.copy()
+    date_col = next((c for c in ["date", "review_date", "timestamp"] if c in df.columns), None)
+    sent_col = "compound_sentiment" if "compound_sentiment" in df.columns else "stars"
+
+    if date_col is None:
+        raise HTTPException(status_code=422, detail="Date column required")
+
+    df[date_col] = pd.to_datetime(df[date_col], errors="coerce")
+    daily = df.groupby(df[date_col].dt.date)[sent_col].mean().reset_index()
+    daily.columns = ["date", "sentiment"]
+    daily = daily.sort_values("date").tail(90)  # last 90 days
+
+    if len(daily) < 7:
+        raise HTTPException(status_code=422, detail="Need at least 7 days of history")
+
+    # Simple exponential smoothing forecast
+    alpha = 0.30
+    vals = daily["sentiment"].values
+    smoothed = float(vals[-1])
+    trend = float(vals[-1] - vals[-7]) / 7  # weekly trend
+
+    forecasts = []
+    last_date = pd.to_datetime(daily["date"].iloc[-1])
+    std_err = float(np.std(np.diff(vals[-30:])) if len(vals) >= 30 else np.std(np.diff(vals)))
+
+    for d in range(1, horizon_days + 1):
+        fcast_date = last_date + pd.Timedelta(days=d)
+        point = smoothed + trend * d * alpha
+        point = float(np.clip(point, -1.0, 1.0))
+        interval_width = std_err * np.sqrt(d) * 1.28  # 80% CI
+        forecasts.append({
+            "date": fcast_date.strftime("%Y-%m-%d"),
+            "forecast": round(point, 4),
+            "lower_80": round(max(-1.0, point - interval_width), 4),
+            "upper_80": round(min(1.0, point + interval_width), 4),
+        })
+
+    return {
+        "horizon_days": horizon_days,
+        "last_observed_sentiment": round(float(vals[-1]), 4),
+        "trend_direction": "declining" if trend < -0.002 else ("improving" if trend > 0.002 else "stable"),
+        "forecast": forecasts,
+    }
+
+
+# ---------------------------------------------------------------------------
 # Entry point
 # ---------------------------------------------------------------------------
 

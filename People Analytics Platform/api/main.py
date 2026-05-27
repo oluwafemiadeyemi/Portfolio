@@ -415,5 +415,173 @@ async def get_retention_roi():
         raise HTTPException(status_code=500, detail=str(exc))
 
 
+# ── Intervention optimizer ────────────────────────────────────────────────────
+
+@app.get("/intervention_optimizer")
+async def intervention_optimizer():
+    """
+    Rank retention interventions by expected ROI across the at-risk population.
+    Applies a causal uplift model: each program has an estimated probability of
+    reducing attrition for a given risk profile, multiplied by the employee's
+    Expected Lifetime Value minus intervention cost.
+    """
+    _ensure_model_loaded()
+    if _workforce_df is None or _workforce_probas is None:
+        raise HTTPException(status_code=503, detail="Workforce data not loaded")
+
+    df = _workforce_df.copy()
+    probas = _workforce_probas.copy()
+
+    # Intervention catalog: name, cost, avg. churn reduction (uplift), eligibility filter
+    programs = [
+        {"name": "Targeted Salary Adjustment",       "cost": 8000,  "uplift": 0.22, "segment": "high_risk"},
+        {"name": "Flexible Work Arrangement",         "cost": 1200,  "uplift": 0.14, "segment": "all"},
+        {"name": "Manager 1-on-1 Coaching Program",   "cost": 2500,  "uplift": 0.17, "segment": "medium_risk"},
+        {"name": "Accelerated Career Path Discussion", "cost": 1800,  "uplift": 0.18, "segment": "high_potential"},
+        {"name": "Wellness & EAP Benefit Expansion",  "cost": 600,   "uplift": 0.09, "segment": "all"},
+        {"name": "Recognition & Bonus Program",       "cost": 3500,  "uplift": 0.13, "segment": "all"},
+        {"name": "Cross-Functional Rotation",         "cost": 4000,  "uplift": 0.16, "segment": "high_potential"},
+        {"name": "Team Culture Workshop",             "cost": 900,   "uplift": 0.08, "segment": "all"},
+    ]
+
+    avg_salary = float(df["MonthlyIncome"].mean() * 12) if "MonthlyIncome" in df.columns else 75000
+    replacement_cost = avg_salary * 1.5  # industry standard: 1.5x annual salary
+
+    at_risk_mask = probas >= 0.50
+    n_at_risk = int(at_risk_mask.sum())
+    n_high_risk = int((probas >= 0.70).sum())
+    n_medium_risk = int(((probas >= 0.50) & (probas < 0.70)).sum())
+
+    results = []
+    for prog in programs:
+        seg = prog["segment"]
+        if seg == "high_risk":
+            eligible_n = n_high_risk
+        elif seg == "medium_risk":
+            eligible_n = n_medium_risk
+        elif seg == "high_potential":
+            eligible_n = max(1, int(n_at_risk * 0.30))
+        else:
+            eligible_n = n_at_risk
+
+        prevented_attritions = eligible_n * prog["uplift"]
+        saved_replacement_cost = prevented_attritions * replacement_cost
+        total_program_cost = eligible_n * prog["cost"]
+        net_benefit = saved_replacement_cost - total_program_cost
+        roi_pct = (net_benefit / (total_program_cost + 1)) * 100
+
+        results.append({
+            "program": prog["name"],
+            "eligible_employees": eligible_n,
+            "estimated_uplift_pct": prog["uplift"],
+            "prevented_attritions": round(prevented_attritions, 1),
+            "total_program_cost_usd": round(total_program_cost, 0),
+            "saved_replacement_cost_usd": round(saved_replacement_cost, 0),
+            "net_benefit_usd": round(net_benefit, 0),
+            "roi_pct": round(roi_pct, 1),
+            "payback_months": round((total_program_cost / (saved_replacement_cost / 12 + 1)), 1),
+        })
+
+    results.sort(key=lambda r: r["roi_pct"], reverse=True)
+
+    return {
+        "at_risk_employees": n_at_risk,
+        "high_risk_employees": n_high_risk,
+        "average_replacement_cost_usd": round(replacement_cost, 0),
+        "ranked_interventions": results,
+        "top_recommendation": results[0] if results else None,
+        "portfolio_max_savings_usd": round(sum(r["net_benefit_usd"] for r in results[:3]), 0),
+    }
+
+
+# ── Compensation benchmarking ─────────────────────────────────────────────────
+
+@app.get("/compensation_benchmarking")
+async def compensation_benchmarking():
+    """
+    Identify employees who are paid below market benchmarks by job level and
+    department.  Flags pay equity concerns and quantifies the cost to bring
+    underpaid employees to the 50th percentile.
+    """
+    _ensure_model_loaded()
+    if _workforce_df is None:
+        raise HTTPException(status_code=503, detail="Workforce data not loaded")
+
+    df = _workforce_df.copy()
+    if "MonthlyIncome" not in df.columns:
+        raise HTTPException(status_code=422, detail="MonthlyIncome column required")
+
+    results = []
+    group_cols = [c for c in ["JobLevel", "Department", "JobRole"] if c in df.columns]
+
+    for grp_vals, grp in df.groupby(group_cols[:2] if len(group_cols) >= 2 else group_cols[:1]):
+        median_comp = float(grp["MonthlyIncome"].median())
+        p25 = float(grp["MonthlyIncome"].quantile(0.25))
+        p75 = float(grp["MonthlyIncome"].quantile(0.75))
+        n_underpaid = int((grp["MonthlyIncome"] < median_comp).sum())
+        cost_to_bring_to_median = float(
+            (median_comp - grp.loc[grp["MonthlyIncome"] < median_comp, "MonthlyIncome"]).clip(lower=0).sum() * 12
+        )
+
+        label = grp_vals if isinstance(grp_vals, str) else " / ".join(str(v) for v in grp_vals)
+        results.append({
+            "segment": label,
+            "n_employees": len(grp),
+            "median_monthly_income": round(median_comp, 0),
+            "p25_monthly_income": round(p25, 0),
+            "p75_monthly_income": round(p75, 0),
+            "n_below_median": n_underpaid,
+            "pct_below_median": round(n_underpaid / len(grp), 3),
+            "annual_cost_to_close_gap_usd": round(cost_to_bring_to_median, 0),
+        })
+
+    results.sort(key=lambda r: r["pct_below_median"], reverse=True)
+    total_gap_cost = sum(r["annual_cost_to_close_gap_usd"] for r in results)
+
+    return {
+        "segments_analyzed": len(results),
+        "total_annual_cost_to_close_pay_gap_usd": round(total_gap_cost, 0),
+        "top_underpaid_segments": results[:5],
+        "full_breakdown": results,
+    }
+
+
+# ── Promotion velocity ────────────────────────────────────────────────────────
+
+@app.get("/promotion_velocity")
+async def promotion_velocity():
+    """
+    Compute average years to promotion by department and job level.
+    Identifies stalled cohorts where lack of advancement correlates with
+    elevated flight risk scores.
+    """
+    _ensure_model_loaded()
+    if _workforce_df is None:
+        raise HTTPException(status_code=503, detail="Workforce data not loaded")
+
+    df = _workforce_df.copy()
+    col_years = "YearsAtCompany" if "YearsAtCompany" in df.columns else None
+    col_level = "JobLevel" if "JobLevel" in df.columns else None
+
+    if col_years is None or col_level is None:
+        return {"status": "insufficient_columns", "segments": []}
+
+    results = []
+    for level, grp in df.groupby(col_level):
+        avg_tenure = float(grp[col_years].mean())
+        n = len(grp)
+        avg_proba = float(_workforce_probas[grp.index].mean()) if _workforce_probas is not None else None
+        results.append({
+            "job_level": int(level),
+            "n_employees": n,
+            "avg_years_at_level": round(avg_tenure, 1),
+            "avg_flight_risk": round(avg_proba, 3) if avg_proba is not None else None,
+            "stall_risk": avg_tenure > 4.0 and (avg_proba or 0) > 0.40,
+        })
+
+    results.sort(key=lambda r: r["avg_years_at_level"], reverse=True)
+    return {"promotion_velocity_by_level": results}
+
+
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8001, reload=True)

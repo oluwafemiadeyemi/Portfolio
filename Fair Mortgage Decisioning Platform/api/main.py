@@ -435,6 +435,178 @@ async def geographic_analysis(state_code: str):
         raise HTTPException(status_code=500, detail=str(exc))
 
 
+# ── Threshold optimization ────────────────────────────────────────────────────
+
+@app.get("/threshold_optimization")
+def threshold_optimization():
+    """
+    Compute Pareto-optimal threshold candidates balancing approval rate,
+    demographic parity gap, and overall accuracy.  Returns a curve of
+    (threshold, metrics) so the compliance team can pick the operating point.
+    """
+    _ensure_loaded()
+    if _portfolio_probas is None or _portfolio_df is None:
+        raise HTTPException(status_code=503, detail="Portfolio data not loaded.")
+
+    thresholds = np.arange(0.30, 0.80, 0.025)
+    results = []
+
+    probas = _portfolio_probas
+    df = _portfolio_df.copy()
+
+    for t in thresholds:
+        preds = (probas >= t).astype(int)
+        n = len(preds)
+        approval_rate = float(preds.mean())
+
+        # Demographic parity gap (by sex: 1=male, 2=female)
+        dp_gap = None
+        if "applicant_sex" in df.columns:
+            male_mask = df["applicant_sex"] == 1
+            female_mask = df["applicant_sex"] == 2
+            if male_mask.sum() > 0 and female_mask.sum() > 0:
+                male_rate = float(preds[male_mask.values].mean())
+                female_rate = float(preds[female_mask.values].mean())
+                dp_gap = round(abs(male_rate - female_rate), 4)
+
+        # Disparate impact ratio (ECOA 80% rule)
+        di_ratio = None
+        if "applicant_race_1" in df.columns:
+            white_mask = df["applicant_race_1"] == 5
+            minority_mask = df["applicant_race_1"].isin([1, 2, 3, 4])
+            if white_mask.sum() > 0 and minority_mask.sum() > 0:
+                white_rate = float(preds[white_mask.values].mean())
+                minority_rate = float(preds[minority_mask.values].mean())
+                di_ratio = round(minority_rate / (white_rate + 1e-9), 4)
+
+        results.append({
+            "threshold": round(float(t), 3),
+            "approval_rate": round(approval_rate, 4),
+            "denial_rate": round(1.0 - approval_rate, 4),
+            "demographic_parity_gap": dp_gap,
+            "disparate_impact_ratio": di_ratio,
+            "ecoa_80pct_rule_pass": (di_ratio >= 0.80) if di_ratio is not None else None,
+            "n_applications": n,
+        })
+
+    current = next((r for r in results if abs(r["threshold"] - _threshold) < 0.013), results[0])
+    return {
+        "current_threshold": round(_threshold, 3),
+        "curve": results,
+        "recommended_threshold": _find_optimal_threshold(results),
+        "current_metrics": current,
+    }
+
+
+def _find_optimal_threshold(curve: List[Dict]) -> float:
+    """Pick threshold with best approval rate subject to DI ratio >= 0.80."""
+    passing = [r for r in curve if r.get("ecoa_80pct_rule_pass") is True]
+    if not passing:
+        return round(_threshold, 3)
+    best = max(passing, key=lambda r: r["approval_rate"])
+    return best["threshold"]
+
+
+# ── Adverse action letter ─────────────────────────────────────────────────────
+
+@app.post("/adverse_action_letter")
+def adverse_action_letter(application: MortgageApplication):
+    """
+    Generate a ECOA/FCRA-compliant adverse action letter for a denied application.
+    Returns structured letter content with the top denial reasons in plain English.
+    """
+    _ensure_loaded()
+    if _model is None:
+        raise HTTPException(status_code=503, detail="Model not loaded.")
+
+    score_result = score_application(application)
+    if score_result.get("decision") == "APPROVED":
+        return {"status": "not_applicable", "message": "Application was approved; no adverse action letter required."}
+
+    shap_features = score_result.get("top_factors", [])
+    reason_map = {
+        "dti_ratio": "Debt-to-income ratio exceeds acceptable limits",
+        "ltv_ratio": "Loan-to-value ratio is too high for the requested loan amount",
+        "credit_score": "Credit history does not meet minimum requirements",
+        "income": "Income is insufficient to support the requested loan amount",
+        "loan_amount": "Requested loan amount exceeds program limits",
+        "property_value": "Property value does not support the requested loan amount",
+        "loan_to_income_ratio": "Loan amount is disproportionate to verified income",
+        "monthly_payment_burden": "Estimated monthly payment exceeds income-based capacity",
+    }
+
+    reasons = []
+    for factor in shap_features[:5]:
+        feat = factor.get("feature", "")
+        direction = factor.get("direction", "")
+        if direction == "increases_risk":
+            readable = reason_map.get(feat, f"Adverse assessment of {feat.replace('_', ' ')}")
+            reasons.append(readable)
+
+    if not reasons:
+        reasons = ["Overall credit profile does not meet current underwriting standards"]
+
+    import datetime
+    letter_date = datetime.date.today().strftime("%B %d, %Y")
+
+    return {
+        "letter_date": letter_date,
+        "decision": "DENIED",
+        "adverse_action_reasons": reasons[:5],
+        "regulatory_notices": [
+            "You have the right to obtain a free copy of your credit report within 60 days.",
+            "If you believe you have been discriminated against, contact the CFPB at 1-855-411-2372.",
+            "This decision was made in accordance with the Equal Credit Opportunity Act (ECOA).",
+        ],
+        "credit_score_disclosure": {
+            "score_used": bool(application.credit_score_applicant),
+            "score_range": "300–850",
+            "key_factors": reasons[:3],
+        },
+        "application_id": f"APP-{abs(hash(str(application.dict()))) % 1_000_000:06d}",
+    }
+
+
+# ── HMDA stress test ──────────────────────────────────────────────────────────
+
+@app.get("/hmda_stress_test")
+def hmda_stress_test():
+    """
+    Simulate how portfolio approval rates and fairness metrics shift under
+    adverse macroeconomic scenarios (rate shock, recession, housing correction).
+    """
+    _ensure_loaded()
+    if _portfolio_probas is None:
+        raise HTTPException(status_code=503, detail="Portfolio not loaded.")
+
+    scenarios = {
+        "baseline": 0.0,
+        "mild_recession": -0.08,
+        "rate_shock_200bps": -0.12,
+        "severe_recession": -0.20,
+        "housing_correction_15pct": -0.10,
+    }
+
+    results = {}
+    for scenario, shock in scenarios.items():
+        adjusted = np.clip(_portfolio_probas + shock, 0.0, 1.0)
+        preds = (adjusted >= _threshold).astype(int)
+        results[scenario] = {
+            "approval_rate": round(float(preds.mean()), 4),
+            "approval_count": int(preds.sum()),
+            "denial_count": int((1 - preds).sum()),
+            "approval_rate_delta_vs_baseline": 0.0,
+        }
+
+    baseline_rate = results["baseline"]["approval_rate"]
+    for k in results:
+        results[k]["approval_rate_delta_vs_baseline"] = round(
+            results[k]["approval_rate"] - baseline_rate, 4
+        )
+
+    return {"stress_test_scenarios": results, "threshold": round(_threshold, 3)}
+
+
 # ── Helper functions ───────────────────────────────────────────────────────────
 
 def _compute_application_fairness_flags(application: MortgageApplication, prob: float) -> Dict:
