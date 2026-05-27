@@ -25,20 +25,34 @@ logger = logging.getLogger(__name__)
 # Page config (must be first Streamlit call)
 # ---------------------------------------------------------------------------
 st.set_page_config(
-    page_title="Retail Operations Intelligence",
+    page_title="Retail Operations Intelligence Platform",
     page_icon="🏪",
     layout="wide",
     initial_sidebar_state="expanded",
 )
 
+# ── Design system ──────────────────────────────────────────────────────────────
+_portfolio_root = Path(__file__).resolve().parents[2]
+if str(_portfolio_root) not in sys.path:
+    sys.path.insert(0, str(_portfolio_root))
+try:
+    from shared.design_system import (
+        apply_theme, kpi_card, section_header, chart_layout,
+        page_hero, sidebar_brand, risk_badge, gauge_chart, COLORS,
+    )
+    apply_theme()
+except ImportError:
+    pass
+
 # ---------------------------------------------------------------------------
-# Custom CSS
+# Project-specific CSS
 # ---------------------------------------------------------------------------
 st.markdown("""
 <style>
-    .kpi-card {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        border-radius: 12px;
+    .kpi-card-retail {
+        background: linear-gradient(135deg, #1C2333 0%, #1E2538 100%);
+        border: 1px solid #2A3350;
+        border-radius: 14px;
         padding: 18px 22px;
         color: white;
         margin-bottom: 10px;

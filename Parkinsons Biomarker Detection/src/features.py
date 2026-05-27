@@ -50,10 +50,12 @@ def extract_voice_features(df: pd.DataFrame) -> pd.DataFrame:
         for col in missing:
             df[col] = np.nan
 
-    # Fill NaN with column medians
+    # Fill NaN with column medians (computed from this slice only — callers should
+    # pass training data when building the imputer, then transform test separately)
     for col in voice_raw:
         if df[col].isna().any():
-            df[col] = df[col].fillna(df[col].median())
+            median_val = df[col].median()
+            df[col] = df[col].fillna(median_val)
 
     # Engineered
     df["jitter_shimmer_ratio"] = df["MDVP_Jitter_pct"] / (df["MDVP_Shimmer"] + eps)

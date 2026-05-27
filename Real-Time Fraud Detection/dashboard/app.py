@@ -34,47 +34,31 @@ API_BASE = "http://localhost:8000"
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
 st.set_page_config(
-    page_title="Fraud Detection Intelligence Platform",
+    page_title="Real-Time Fraud Detection Platform",
     page_icon="🛡️",
     layout="wide",
     initial_sidebar_state="expanded",
 )
 
-# ─────────────────────────────────────────────
-# Custom CSS
-# ─────────────────────────────────────────────
+# ── Design system ──────────────────────────────────────────────────────────────
+_portfolio_root = Path(__file__).resolve().parents[2]
+if str(_portfolio_root) not in sys.path:
+    sys.path.insert(0, str(_portfolio_root))
+try:
+    from shared.design_system import (
+        apply_theme, kpi_card, section_header, chart_layout,
+        page_hero, sidebar_brand, risk_badge, gauge_chart, COLORS,
+    )
+    apply_theme()
+except ImportError:
+    pass
 
 CUSTOM_CSS = """
 <style>
-  /* Main background */
-  .stApp { background-color: #0f1117; }
-
-  /* KPI card styles */
-  .kpi-card {
-    background: linear-gradient(135deg, #1e2130, #252840);
-    border-radius: 12px;
-    padding: 20px 24px;
-    border-left: 4px solid #4f8ef7;
-    margin-bottom: 16px;
-  }
-  .kpi-value {
-    font-size: 2.4rem;
-    font-weight: 700;
-    color: #e8eaf6;
-    line-height: 1.1;
-  }
-  .kpi-label {
-    font-size: 0.85rem;
-    color: #9e9fb4;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-top: 4px;
-  }
-
-  /* Risk level badges */
+  /* Risk level badges — project-specific overrides */
   .risk-low {
-    background-color: #1a3a2a;
-    color: #4ade80;
+    background-color: rgba(0,200,150,0.12);
+    color: #00C896;
     border-radius: 6px;
     padding: 4px 12px;
     font-weight: 600;

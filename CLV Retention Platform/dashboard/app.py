@@ -23,11 +23,24 @@ PROJECT_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
 st.set_page_config(
-    page_title="CLV & Retention Intelligence",
-    page_icon="📊",
+    page_title="CLV & Retention Intelligence Platform",
+    page_icon="💎",
     layout="wide",
     initial_sidebar_state="expanded",
 )
+
+# ── Design system ──────────────────────────────────────────────────────────────
+_portfolio_root = Path(__file__).resolve().parents[2]
+if str(_portfolio_root) not in sys.path:
+    sys.path.insert(0, str(_portfolio_root))
+try:
+    from shared.design_system import (
+        apply_theme, kpi_card, section_header, chart_layout,
+        page_hero, sidebar_brand, risk_badge, gauge_chart, COLORS,
+    )
+    apply_theme()
+except ImportError:
+    pass
 
 # ─── Data Loading ─────────────────────────────────────────────────────────────
 @st.cache_resource(show_spinner="Initializing models and data...")

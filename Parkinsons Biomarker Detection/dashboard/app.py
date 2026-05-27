@@ -46,11 +46,24 @@ from src.models import (
 # Page configuration
 # -------------------------------------------------------------------------
 st.set_page_config(
-    page_title="PD Biomarker Platform",
+    page_title="Parkinson's Biomarker Detection Platform",
     page_icon="🧠",
     layout="wide",
     initial_sidebar_state="expanded",
 )
+
+# ── Design system ──────────────────────────────────────────────────────────────
+_portfolio_root = Path(__file__).resolve().parents[2]
+if str(_portfolio_root) not in sys.path:
+    sys.path.insert(0, str(_portfolio_root))
+try:
+    from shared.design_system import (
+        apply_theme, kpi_card, section_header, chart_layout,
+        page_hero, sidebar_brand, risk_badge, gauge_chart, COLORS,
+    )
+    apply_theme()
+except ImportError:
+    pass
 
 # -------------------------------------------------------------------------
 # Session state initialisation

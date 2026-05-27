@@ -52,16 +52,29 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
+# ── Design system ──────────────────────────────────────────────────────────────
+_portfolio_root = Path(__file__).resolve().parents[2]
+if str(_portfolio_root) not in sys.path:
+    sys.path.insert(0, str(_portfolio_root))
+try:
+    from shared.design_system import (
+        apply_theme, kpi_card, section_header, chart_layout,
+        page_hero, sidebar_brand, risk_badge, gauge_chart, COLORS,
+    )
+    apply_theme()
+except ImportError:
+    pass
+
 st.markdown("""
 <style>
-.risk-critical { color: #dc3545; font-weight: bold; }
-.risk-high { color: #fd7e14; font-weight: bold; }
-.risk-medium { color: #ffc107; font-weight: bold; }
-.risk-low { color: #28a745; font-weight: bold; }
-.segment-protect { background: #dc3545; color: white; padding: 2px 8px; border-radius: 4px; }
-.segment-develop { background: #fd7e14; color: white; padding: 2px 8px; border-radius: 4px; }
-.segment-monitor { background: #ffc107; color: black; padding: 2px 8px; border-radius: 4px; }
-.segment-maintain { background: #28a745; color: white; padding: 2px 8px; border-radius: 4px; }
+.risk-critical { color: #FF5A65; font-weight: 700; }
+.risk-high     { color: #FFB020; font-weight: 700; }
+.risk-medium   { color: #4F8EF7; font-weight: 700; }
+.risk-low      { color: #00C896; font-weight: 700; }
+.segment-protect { background: #FF5A65; color: white; padding: 2px 10px; border-radius: 20px; font-size:0.72rem; font-weight:700; }
+.segment-develop { background: #FFB020; color: #0E1117; padding: 2px 10px; border-radius: 20px; font-size:0.72rem; font-weight:700; }
+.segment-monitor { background: #4F8EF7; color: white; padding: 2px 10px; border-radius: 20px; font-size:0.72rem; font-weight:700; }
+.segment-maintain { background: #00C896; color: #0E1117; padding: 2px 10px; border-radius: 20px; font-size:0.72rem; font-weight:700; }
 </style>
 """, unsafe_allow_html=True)
 

@@ -29,32 +29,35 @@ logger = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------
 st.set_page_config(
     page_title="Brand Intelligence Platform",
-    page_icon="📊",
+    page_icon="💬",
     layout="wide",
     initial_sidebar_state="expanded",
 )
 
+# ── Design system ──────────────────────────────────────────────────────────────
+_portfolio_root = Path(__file__).resolve().parents[2]
+if str(_portfolio_root) not in sys.path:
+    sys.path.insert(0, str(_portfolio_root))
+try:
+    from shared.design_system import (
+        apply_theme, kpi_card, section_header, chart_layout,
+        page_hero, sidebar_brand, risk_badge, gauge_chart, COLORS,
+    )
+    apply_theme()
+except ImportError:
+    pass
+
 # ---------------------------------------------------------------------------
-# CSS / Theme
+# Project-specific CSS
 # ---------------------------------------------------------------------------
 st.markdown(
     """
     <style>
-    .kpi-card {
-        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-        border: 1px solid #0f3460;
-        border-radius: 12px;
-        padding: 20px;
-        text-align: center;
-        color: white;
-    }
-    .kpi-value { font-size: 2.5rem; font-weight: 700; color: #e94560; }
-    .kpi-label { font-size: 0.9rem; color: #a0aec0; margin-top: 4px; }
-    .alert-critical { background-color: #fff5f5; border-left: 4px solid #e53e3e; padding: 10px; }
-    .alert-warning  { background-color: #fffaf0; border-left: 4px solid #dd6b20; padding: 10px; }
-    .badge-positive { background: #c6f6d5; color: #276749; padding: 2px 8px; border-radius: 12px; }
-    .badge-negative { background: #fed7d7; color: #9b2c2c; padding: 2px 8px; border-radius: 12px; }
-    .badge-neutral  { background: #e2e8f0; color: #4a5568; padding: 2px 8px; border-radius: 12px; }
+    .alert-critical { background: rgba(255,90,101,0.08); border-left: 3px solid #FF5A65; padding: 10px 14px; border-radius:0 8px 8px 0; }
+    .alert-warning  { background: rgba(255,176,32,0.08); border-left: 3px solid #FFB020; padding: 10px 14px; border-radius:0 8px 8px 0; }
+    .badge-positive { background: rgba(0,200,150,0.15); color: #00C896; padding: 2px 10px; border-radius: 20px; font-size:0.75rem; font-weight:700; }
+    .badge-negative { background: rgba(255,90,101,0.15); color: #FF5A65; padding: 2px 10px; border-radius: 20px; font-size:0.75rem; font-weight:700; }
+    .badge-neutral  { background: rgba(122,139,173,0.15); color: #7A8BAD; padding: 2px 10px; border-radius: 20px; font-size:0.75rem; font-weight:700; }
     </style>
     """,
     unsafe_allow_html=True,

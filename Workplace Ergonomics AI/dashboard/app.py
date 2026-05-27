@@ -25,20 +25,33 @@ logger = logging.getLogger(__name__)
 # Page config
 # ---------------------------------------------------------------------------
 st.set_page_config(
-    page_title="ErgoPro — Workplace Safety AI",
+    page_title="Workplace Ergonomics AI Platform",
     page_icon="🦺",
     layout="wide",
     initial_sidebar_state="expanded",
 )
 
+# ── Design system ──────────────────────────────────────────────────────────────
+_portfolio_root = Path(__file__).resolve().parents[2]
+if str(_portfolio_root) not in sys.path:
+    sys.path.insert(0, str(_portfolio_root))
+try:
+    from shared.design_system import (
+        apply_theme, kpi_card, section_header, chart_layout,
+        page_hero, sidebar_brand, risk_badge, gauge_chart, COLORS,
+    )
+    apply_theme()
+except ImportError:
+    pass
+
 # ---------------------------------------------------------------------------
-# Custom CSS
+# Project-specific CSS
 # ---------------------------------------------------------------------------
 st.markdown("""
 <style>
     .reba-badge-critical {
-        background: linear-gradient(135deg,#8e44ad,#c0392b);
-        color: white; border-radius: 12px; padding: 20px 24px; margin-bottom: 8px;
+        background: rgba(255,90,101,0.12); border: 1px solid rgba(255,90,101,0.3);
+        color: #FF5A65; border-radius: 12px; padding: 16px 20px; margin-bottom: 8px;
     }
     .reba-badge-high {
         background: linear-gradient(135deg,#e74c3c,#e67e22);

@@ -43,26 +43,33 @@ except ImportError:
 
 # ── Page config ────────────────────────────────────────────────────────────────
 st.set_page_config(
-    page_title="Fair Mortgage Underwriting Platform",
+    page_title="Fair Mortgage Decisioning Platform",
     page_icon="🏦",
     layout="wide",
     initial_sidebar_state="expanded",
 )
 
-# ── Custom CSS ─────────────────────────────────────────────────────────────────
+# ── Design system ──────────────────────────────────────────────────────────────
+PORTFOLIO_ROOT = Path(__file__).resolve().parents[2]
+if str(PORTFOLIO_ROOT) not in sys.path:
+    sys.path.insert(0, str(PORTFOLIO_ROOT))
+try:
+    from shared.design_system import (
+        apply_theme, kpi_card, section_header, chart_layout,
+        page_hero, sidebar_brand, risk_badge, gauge_chart, COLORS,
+    )
+    apply_theme()
+except ImportError:
+    pass
+
+# ── Project-specific CSS ───────────────────────────────────────────────────────
 st.markdown("""
 <style>
-.metric-card {
-    background-color: #f0f2f6;
-    border-radius: 8px;
-    padding: 16px;
-    margin: 8px 0;
-}
-.pass-badge { color: #28a745; font-weight: bold; font-size: 1.1em; }
-.fail-badge { color: #dc3545; font-weight: bold; font-size: 1.1em; }
-.warning-badge { color: #ffc107; font-weight: bold; font-size: 1.1em; }
-.approved { color: #28a745; font-size: 1.5em; font-weight: bold; }
-.denied { color: #dc3545; font-size: 1.5em; font-weight: bold; }
+.pass-badge { color: #00C896; font-weight: 700; font-size: 1.05em; }
+.fail-badge { color: #FF5A65; font-weight: 700; font-size: 1.05em; }
+.warning-badge { color: #FFB020; font-weight: 700; font-size: 1.05em; }
+.approved { color: #00C896; font-size: 1.4em; font-weight: 700; }
+.denied   { color: #FF5A65; font-size: 1.4em; font-weight: 700; }
 </style>
 """, unsafe_allow_html=True)
 
