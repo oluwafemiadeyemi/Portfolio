@@ -1,0 +1,39 @@
+{
+  "project": "Bankruptcy Prediction",
+  "best_model": null,
+  "primary_target": "distress_12m",
+  "n_train": 5455,
+  "n_test": 1364,
+  "n_features": 116,
+  "distress_rate_actual": 0.0,
+  "auc_roc": 0.0,
+  "precision_at_50": 0.0,
+  "average_precision": 0.0,
+  "f1": 0.0,
+  "all_models": {
+    "XGBoost": {
+      "auc_roc": NaN,
+      "average_precision": 0.0,
+      "precision_at_50": 0.0,
+      "recall_at_50": 0.0,
+      "f1": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "distress_rate": 0.0,
+      "n_samples": 1364.0
+    },
+    "LightGBM": {
+      "auc_roc": NaN,
+      "average_precision": 0.0,
+      "precision_at_50": 0.0,
+      "recall_at_50": 0.0,
+      "f1": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "distress_rate": 0.0,
+      "n_samples": 1364.0
+    }
+  },
+  "contagion_mean_risk": null,
+  "contagion_high_risk_count": null
+}

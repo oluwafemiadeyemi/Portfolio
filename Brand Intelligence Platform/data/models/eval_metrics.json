@@ -1,0 +1,81 @@
+{
+  "model": "XGBoost",
+  "test": {
+    "accuracy": 0.9978,
+    "precision_macro": 0.9773,
+    "recall_macro": 0.9592,
+    "f1_macro": 0.968,
+    "f1_weighted": 0.9977,
+    "confusion_matrix": [
+      [
+        12888,
+        44,
+        0
+      ],
+      [
+        4,
+        1085,
+        142
+      ],
+      [
+        0,
+        33,
+        85803
+      ]
+    ],
+    "n_test_samples": 99999
+  },
+  "cv": {
+    "accuracy_mean": 0.9983,
+    "accuracy_std": 0.0002,
+    "accuracy_scores": [
+      0.9984,
+      0.9986,
+      0.9983,
+      0.9985,
+      0.9979
+    ],
+    "f1_macro_mean": 0.9761,
+    "f1_macro_std": 0.0035,
+    "f1_macro_scores": [
+      0.9765,
+      0.9806,
+      0.9752,
+      0.9778,
+      0.9701
+    ],
+    "f1_weighted_mean": 0.9983,
+    "f1_weighted_std": 0.0002,
+    "f1_weighted_scores": [
+      0.9983,
+      0.9986,
+      0.9983,
+      0.9984,
+      0.9979
+    ],
+    "precision_macro_mean": 0.9817,
+    "precision_macro_std": 0.004,
+    "precision_macro_scores": [
+      0.9821,
+      0.9814,
+      0.9834,
+      0.987,
+      0.9747
+    ],
+    "recall_macro_mean": 0.9706,
+    "recall_macro_std": 0.0049,
+    "recall_macro_scores": [
+      0.9712,
+      0.9798,
+      0.9674,
+      0.9691,
+      0.9657
+    ]
+  },
+  "n_train": 399992,
+  "n_test": 99999,
+  "feature_matrix_shape": [
+    499991,
+    117
+  ]
+}

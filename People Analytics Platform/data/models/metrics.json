@@ -1,0 +1,54 @@
+{
+  "project": "Employee Attrition Prediction",
+  "best_model": "LightGBM",
+  "n_train": 40000,
+  "n_test": 10000.0,
+  "n_features": 58,
+  "attrition_rate_actual": 0.1585,
+  "roc_auc": 0.6563,
+  "avg_precision": 0.2383,
+  "accuracy": 0.7073,
+  "precision": 0.2462,
+  "recall": 0.4107,
+  "f1_weighted": 0.7341,
+  "f1_binary": 0.3079,
+  "attrition_rate_predicted": 0.2644,
+  "elv_mean": 1109553.37,
+  "elv_median": 836458.83,
+  "segment_distribution": {
+    "Monitor": 25000,
+    "Maintain": 25000
+  },
+  "top_flight_risk": [
+    {
+      "EmployeeNumber": 6051,
+      "JobRole": "Research Director",
+      "attrition_proba": 0.9359714304557201,
+      "segment": "Monitor"
+    },
+    {
+      "EmployeeNumber": 27670,
+      "JobRole": "Healthcare Representative",
+      "attrition_proba": 0.9340656689239846,
+      "segment": "Maintain"
+    },
+    {
+      "EmployeeNumber": 23453,
+      "JobRole": "Research Director",
+      "attrition_proba": 0.9295634507111946,
+      "segment": "Maintain"
+    },
+    {
+      "EmployeeNumber": 12320,
+      "JobRole": "Research Scientist",
+      "attrition_proba": 0.9287181271910319,
+      "segment": "Maintain"
+    },
+    {
+      "EmployeeNumber": 167,
+      "JobRole": "Sales Representative",
+      "attrition_proba": 0.9262831371994548,
+      "segment": "Maintain"
+    }
+  ]
+}

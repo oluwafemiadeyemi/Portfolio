@@ -1,0 +1,96 @@
+{
+  "project": "Loan Approval Prediction",
+  "best_model": "XGBoost",
+  "n_train": 110187,
+  "n_test": 27547,
+  "n_features": 36,
+  "approval_rate_actual": 0.7509,
+  "roc_auc": 0.9796,
+  "avg_precision": 0.9938,
+  "f1": 0.9502,
+  "brier_score": 0.0554,
+  "all_models": [
+    {
+      "model": "XGBoost",
+      "roc_auc": 0.9796,
+      "avg_precision": 0.9938,
+      "accuracy": 0.9279,
+      "precision": 0.9878,
+      "recall": 0.9153,
+      "f1": 0.9502,
+      "brier_score": 0.0554,
+      "approval_rate": 0.6958,
+      "n_test": 27547
+    },
+    {
+      "model": "LogisticRegression",
+      "roc_auc": 0.9683,
+      "avg_precision": 0.9906,
+      "accuracy": 0.9139,
+      "precision": 0.987,
+      "recall": 0.8972,
+      "f1": 0.9399,
+      "brier_score": 0.0673,
+      "approval_rate": 0.6826,
+      "n_test": 27547
+    }
+  ],
+  "fairness": {
+    "XGBoost": {
+      "applicant_sex_approval_rates": {
+        "1": 0.697,
+        "2": 0.692,
+        "3": 0.696,
+        "4": 0.701,
+        "6": 0.571
+      },
+      "applicant_race_1_approval_rates": {
+        "1.0": 0.652,
+        "2.0": 0.698,
+        "3.0": 0.709,
+        "4.0": 0.74,
+        "5.0": 0.695,
+        "6.0": 0.693,
+        "7.0": 0.702,
+        "21.0": 0.651,
+        "22.0": 0.622,
+        "23.0": 0.538,
+        "24.0": 0.5,
+        "25.0": 0.429,
+        "26.0": 0.667,
+        "27.0": 0.627,
+        "41.0": 1.0,
+        "42.0": 0.0,
+        "44.0": 0.444
+      }
+    },
+    "LogisticRegression": {
+      "applicant_sex_approval_rates": {
+        "1": 0.685,
+        "2": 0.676,
+        "3": 0.684,
+        "4": 0.686,
+        "6": 0.571
+      },
+      "applicant_race_1_approval_rates": {
+        "1.0": 0.632,
+        "2.0": 0.679,
+        "3.0": 0.7,
+        "4.0": 0.76,
+        "5.0": 0.683,
+        "6.0": 0.679,
+        "7.0": 0.687,
+        "21.0": 0.651,
+        "22.0": 0.568,
+        "23.0": 0.615,
+        "24.0": 0.5,
+        "25.0": 0.429,
+        "26.0": 0.667,
+        "27.0": 0.647,
+        "41.0": 1.0,
+        "42.0": 0.0,
+        "44.0": 0.444
+      }
+    }
+  }
+}

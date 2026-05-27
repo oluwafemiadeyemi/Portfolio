@@ -1,0 +1,28 @@
+{
+  "project": "Customer Churn Prediction",
+  "n_train": 5088,
+  "n_val": 898,
+  "n_test": 1057,
+  "n_features": 25,
+  "churn_rate_actual": 0.2649,
+  "auc_roc": 0.8326,
+  "auc_pr": 0.6072,
+  "f1": 0.6141,
+  "precision": 0.507,
+  "recall": 0.7786,
+  "avg_clv": 2116.15,
+  "at_risk_revenue_top20pct": 1252203.94,
+  "avg_monthly_revenue": 15.0,
+  "median_survival_days": Infinity,
+  "model_comparison": {
+    "XGBoost": {
+      "auc_pr": 0.6292
+    },
+    "LightGBM": {
+      "auc_pr": 0.63
+    },
+    "LogisticRegression": {
+      "auc_pr": 0.6321
+    }
+  }
+}
