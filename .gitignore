@@ -4,6 +4,11 @@
 *.csv
 *.json
 *.json.gz
+# Allow package/config JSON files in portfolio website and other non-data paths
+!portfolio-website/package.json
+!portfolio-website/tsconfig.json
+!portfolio-website/vercel.json
+!portfolio-website/package-lock.json
 *.parquet
 *.pkl
 *.joblib
