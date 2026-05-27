@@ -1,0 +1,94 @@
+# ── Large data files ──────────────────────────────────────────────────────────
+**/data/raw/
+**/data/raw/**
+*.csv
+*.json
+*.json.gz
+*.parquet
+*.pkl
+*.joblib
+*.h5
+*.hdf5
+*.pt
+*.pth
+*.onnx
+
+# ── Images / video assets (large binaries) ────────────────────────────────────
+**/Images/
+**/Video/
+**/videos/
+**/assets/*.mp4
+**/assets/*.avi
+**/assets/*.mov
+**/Dataset/
+**/datasets/
+
+# ── Keep model metadata but not weights ───────────────────────────────────────
+!**/data/models/metrics.json
+!**/data/models/eval_metrics.json
+!**/data/models/*_meta.json
+!**/data/models/feature_cols.json
+
+# ── Python ────────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+.pytest_cache/
+.mypy_cache/
+
+# ── Environments ──────────────────────────────────────────────────────────────
+.env
+.venv/
+venv/
+env/
+*.env
+
+# ── Jupyter ───────────────────────────────────────────────────────────────────
+.ipynb_checkpoints/
+*.ipynb
+
+# ── Logs ──────────────────────────────────────────────────────────────────────
+*.log
+logs/
+
+# ── OS ────────────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── YOLO training runs ────────────────────────────────────────────────────────
+**/runs/
+**/weights/
+**/data/models/retail_ops/
+**/data/models/ppe_safety/
+
+# ── Secrets ───────────────────────────────────────────────────────────────────
+kaggle.json
+*.kaggle
+secrets/
+credentials/
+
+# ── Large dataset archives ────────────────────────────────────────────────────
+*.zip
+*.tar
+*.tar.gz
+*.7z
+*.gz
+
+# ── IDE ───────────────────────────────────────────────────────────────────────
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+
+# ── Monitor / temp scripts ────────────────────────────────────────────────────
+launch_remaining.sh
+monitor.log
+run_training.py
+install_all_packages.bat
+MASTER_TRANSFORMATION_PLAN.md
