@@ -3,6 +3,7 @@
 import { useState } from 'react'
 
 const PROJECTS = [
+  // ── Original 10 projects ──────────────────────────────────────────────────
   {
     id: 'fair-mortgage',
     title: 'Fair Mortgage Decisioning Platform',
@@ -173,9 +174,130 @@ const PROJECTS = [
     githubUrl: 'https://github.com/oluwafemiadeyemi/Portfolio/tree/main/PPE%20Safety%20Compliance',
     description: 'Real-time PPE compliance detection (5 equipment types), zone-specific rules, repeat offender tracking with OSHA progressive discipline, and financial ROI modeling.',
   },
+
+  // ── 7 New projects (11–17) ────────────────────────────────────────────────
+  {
+    id: 'marketing-campaign',
+    title: 'Marketing Campaign Intelligence',
+    emoji: '📣',
+    category: 'MarTech / Analytics',
+    accent: '#6366F1',
+    tagline: 'HDBSCAN segmentation + FP-Growth basket analysis + multi-touch attribution',
+    metrics: [
+      { label: 'Events Processed', value: '5M' },
+      { label: 'Customer Segments', value: '8' },
+      { label: 'Attribution ROAS', value: '+34%' },
+    ],
+    tech: ['HDBSCAN', 'UMAP', 'FP-Growth', 'FastAPI'],
+    demoUrl: 'https://huggingface.co/spaces/oluwafemiadeyemi/marketing-campaign',
+    githubUrl: 'https://github.com/oluwafemiadeyemi/Portfolio/tree/main/Marketing%20Campaign%20Intelligence',
+    description: 'Customer segmentation on 5M events using HDBSCAN + UMAP, RFM scoring, FP-Growth market basket analysis, and Shapley multi-touch attribution to identify high-value segments and campaign ROI drivers.',
+  },
+  {
+    id: 'automotive-pricing',
+    title: 'Automotive Pricing Intelligence',
+    emoji: '🚗',
+    category: 'ML / Automotive',
+    accent: '#F59E0B',
+    tagline: 'LightGBM + XGBoost + CatBoost stack with conformal prediction intervals',
+    metrics: [
+      { label: 'Listings Analysed', value: '3M' },
+      { label: 'Ensemble MAPE', value: '4.2%' },
+      { label: 'Price Interval', value: '95% CI' },
+    ],
+    tech: ['LightGBM', 'XGBoost', 'CatBoost', 'SHAP'],
+    demoUrl: 'https://huggingface.co/spaces/oluwafemiadeyemi/automotive-pricing',
+    githubUrl: 'https://github.com/oluwafemiadeyemi/Portfolio/tree/main/Automotive%20Pricing%20Intelligence',
+    description: 'Stacked ensemble (LightGBM + XGBoost + CatBoost) for vehicle price prediction on 3M Craigslist-scale listings, with Optuna hyperparameter tuning, SHAP waterfall explanations, and conformal prediction intervals.',
+  },
+  {
+    id: 'loan-default',
+    title: 'Loan Default Prediction',
+    emoji: '💳',
+    category: 'FinTech / Credit Risk',
+    accent: '#EF4444',
+    tagline: 'Fair credit risk ensemble with SMOTE + Platt calibration + Fairlearn',
+    metrics: [
+      { label: 'Loans Scored', value: '2.5M' },
+      { label: 'AUC-ROC', value: '0.93' },
+      { label: 'Fairness Gap', value: '<0.03' },
+    ],
+    tech: ['LightGBM', 'CatBoost', 'Fairlearn', 'SMOTE'],
+    demoUrl: 'https://huggingface.co/spaces/oluwafemiadeyemi/loan-default',
+    githubUrl: 'https://github.com/oluwafemiadeyemi/Portfolio/tree/main/Loan%20Default%20Prediction',
+    description: 'Credit risk ensemble on 2.5M Lending Club-scale applications with SMOTE imbalance handling, Fairlearn demographic parity constraints, Platt calibration, and ECOA-compliant SHAP adverse action codes.',
+  },
+  {
+    id: 'malaria-detection',
+    title: 'Malaria Detection',
+    emoji: '🔬',
+    category: 'Deep Learning / Health',
+    accent: '#10B981',
+    tagline: 'EfficientNetV2 + Grad-CAM + MC Dropout + ONNX edge export',
+    metrics: [
+      { label: 'Cells Analysed', value: '27.5k' },
+      { label: 'AUC', value: '0.97' },
+      { label: 'Sensitivity', value: '94%' },
+    ],
+    tech: ['EfficientNetV2', 'Grad-CAM', 'MC Dropout', 'ONNX'],
+    demoUrl: 'https://huggingface.co/spaces/oluwafemiadeyemi/malaria-detection',
+    githubUrl: 'https://github.com/oluwafemiadeyemi/Portfolio/tree/main/Malaria%20Detection',
+    description: 'Malaria parasite detection from microscopy images using EfficientNetV2-S, with Grad-CAM saliency maps, Monte Carlo Dropout uncertainty quantification, and ONNX export for edge / low-resource deployment.',
+  },
+  {
+    id: 'facial-emotion',
+    title: 'Facial Emotion Detection',
+    emoji: '😊',
+    category: 'Computer Vision / AI',
+    accent: '#8B5CF6',
+    tagline: 'Real-time 7-class emotion recognition with arousal-valence mapping',
+    metrics: [
+      { label: 'Emotion Classes', value: '7' },
+      { label: 'Inference', value: '<30ms' },
+      { label: 'Datasets', value: 'FER2013 + RAF-DB' },
+    ],
+    tech: ['EfficientNet-B4', 'Attention Pooling', 'OpenCV', 'FastAPI'],
+    demoUrl: 'https://huggingface.co/spaces/oluwafemiadeyemi/facial-emotion',
+    githubUrl: 'https://github.com/oluwafemiadeyemi/Portfolio/tree/main/Facial%20Emotion%20Detection',
+    description: 'Real-time 7-class facial emotion recognition with attention pooling, arousal-valence space mapping, temporal smoothing, and multi-face batch processing for retail analytics, media research, and UX testing.',
+  },
+  {
+    id: 'music-recommendation',
+    title: 'Music Recommendation System',
+    emoji: '🎵',
+    category: 'RecSys / Entertainment',
+    accent: '#06B6D4',
+    tagline: 'Hybrid ALS + FAISS content + BERT4Rec sequential recommendations',
+    metrics: [
+      { label: 'Users', value: '1M' },
+      { label: 'Hit Rate@10', value: '0.42' },
+      { label: 'NDCG@10', value: '0.31' },
+    ],
+    tech: ['ALS', 'FAISS', 'BERT4Rec', 'LightGCN'],
+    demoUrl: 'https://huggingface.co/spaces/oluwafemiadeyemi/music-recommendation',
+    githubUrl: 'https://github.com/oluwafemiadeyemi/Portfolio/tree/main/Music%20Recommendation%20System',
+    description: 'Hybrid recommender combining ALS collaborative filtering, FAISS content-based retrieval, and popularity-penalised re-ranking. Handles cold-start via genre preferences across 1M synthetic users and 100k tracks.',
+  },
+  {
+    id: 'customer-review',
+    title: 'Customer Review Categorisation',
+    emoji: '⭐',
+    category: 'Generative AI / NLP',
+    accent: '#F97316',
+    tagline: 'Claude API structured extraction + ChromaDB RAG + BERTopic discovery',
+    metrics: [
+      { label: 'Reviews Processed', value: '500k' },
+      { label: 'Categories', value: '8' },
+      { label: 'RAG Precision', value: '91%' },
+    ],
+    tech: ['Claude API', 'ChromaDB', 'BERTopic', 'FastAPI'],
+    demoUrl: 'https://huggingface.co/spaces/oluwafemiadeyemi/customer-review',
+    githubUrl: 'https://github.com/oluwafemiadeyemi/Portfolio/tree/main/Customer%20Review%20Categorisation',
+    description: 'Generative AI review intelligence using Claude claude-sonnet-4-6 with few-shot structured JSON extraction, ChromaDB RAG for similar-review retrieval, BERTopic for unsupervised theme discovery, and multi-provider LLM support.',
+  },
 ]
 
-const CATEGORIES = ['All', 'FinTech / RegTech', 'FinTech / Security', 'FinTech / Operations', 'HR Tech', 'Digital Health', 'NLP / MarTech', 'MarTech / Analytics', 'Computer Vision / Retail', 'Computer Vision / Safety']
+const CATEGORIES = ['All', 'FinTech / RegTech', 'FinTech / Security', 'FinTech / Operations', 'FinTech / Credit Risk', 'HR Tech', 'Digital Health', 'Deep Learning / Health', 'NLP / MarTech', 'MarTech / Analytics', 'Generative AI / NLP', 'Computer Vision / Retail', 'Computer Vision / Safety', 'Computer Vision / AI', 'ML / Automotive', 'RecSys / Entertainment']
 
 export default function Home() {
   const [activeCategory, setActiveCategory] = useState('All')
@@ -227,7 +349,7 @@ export default function Home() {
             Applied AI Engineer & Data Scientist
           </p>
           <p style={{ fontSize: 16, color: 'var(--text-muted)', marginBottom: 40, maxWidth: 600, margin: '0 auto 40px' }}>
-            10 production-grade AI systems across healthcare, finance, retail, and HR.
+            17 production-grade AI systems across healthcare, finance, retail, HR, and entertainment.
             Each ships with a live demo, REST API, and full explainability.
           </p>
 
@@ -240,9 +362,9 @@ export default function Home() {
             marginBottom: 40,
           }}>
             {[
-              { value: '10', label: 'Live AI Systems' },
-              { value: '30+', label: 'API Endpoints' },
-              { value: '6', label: 'ML Domains' },
+              { value: '17', label: 'Live AI Systems' },
+              { value: '50+', label: 'API Endpoints' },
+              { value: '10', label: 'ML Domains' },
               { value: '∞', label: 'Lines of Passion' },
             ].map(stat => (
               <div key={stat.label} style={{ textAlign: 'center' }}>
@@ -287,7 +409,7 @@ export default function Home() {
       {/* Filter bar */}
       <section style={{ padding: '32px 24px 0', maxWidth: 1400, margin: '0 auto' }}>
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-          {['All', 'FinTech / RegTech', 'FinTech / Security', 'FinTech / Operations', 'HR Tech', 'Digital Health', 'NLP / MarTech', 'MarTech / Analytics', 'Computer Vision / Retail', 'Computer Vision / Safety'].map(cat => (
+          {CATEGORIES.map(cat => (
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
