@@ -17,6 +17,8 @@ BASE_DIR   = Path(__file__).resolve().parent.parent
 MODELS_DIR = BASE_DIR / "models"
 DATA_PROC  = BASE_DIR / "data" / "processed"
 sys.path.insert(0, str(BASE_DIR / "src"))
+sys.path.insert(0, str(BASE_DIR.parent / "shared"))
+from ui_theme import apply_theme, hero_banner, kpi_card, section_header, sidebar_branding, style_plotly_fig
 
 st.set_page_config(page_title="Facial Emotion Recognition", page_icon="😊", layout="wide")
 
@@ -102,15 +104,27 @@ def create_demo_face(emo: str) -> Image.Image:
 
 
 def main():
-    st.title("😊 Facial Emotion Recognition Intelligence Platform")
-    st.markdown(
-        "**Customer Experience AI** — EfficientNet-B4 + DINOv2 | "
-        "515k+ training images (AffectNet + FER2013 + RAF-DB) | Arousal-Valence Mapping"
-    )
+    apply_theme()
+    st.markdown(hero_banner(
+        "emotion",
+        "Facial Emotion Detection",
+        "Real-time 7-class emotion recognition · EfficientNet-B4 + Attention Pooling · Arousal-Valence mapping",
+        stats=[("7", "Emotion Classes"), ("<30ms", "Inference"), ("450k+", "Training Images"), ("Disney · Netflix", "Target Buyers")],
+    ), unsafe_allow_html=True)
 
     model = load_model()
-    if model is None:
-        st.warning("Demo mode — run `python src/model.py` to train. Using heuristic predictions.")
+
+    with st.sidebar:
+        st.markdown(sidebar_branding("Facial Emotion Detection", "emotion"), unsafe_allow_html=True)
+        st.metric("Emotion Classes", "7")
+        st.metric("Inference Latency", "<30ms")
+        st.metric("Training Data", "FER2013 + RAF-DB")
+        st.divider()
+        if model is None:
+            st.info("Demo mode active")
+        else:
+            st.success("Model loaded")
+        st.caption("AffectNet + FER2013 + RAF-DB datasets")
 
     tab1, tab2, tab3, tab4 = st.tabs([
         "📸 Emotion Analyzer", "🗺️ Emotion Landscape", "🧭 Arousal-Valence", "📊 Model Info"
@@ -149,7 +163,6 @@ def main():
             prob_df, x="Probability", y="Emotion", orientation="h",
             color="Emotion", color_discrete_map=EMOTION_COLORS,
             title="Emotion Probability Distribution",
-            template="plotly_white",
         )
         fig.update_layout(showlegend=False, height=350)
         st.plotly_chart(fig, use_container_width=True)
@@ -168,8 +181,7 @@ def main():
 
         fig = px.strip(emo_df, x="Time (frame)", y="Emotion",
                        color="Emotion", color_discrete_map=EMOTION_COLORS,
-                       title="Emotion Timeline — Customer Session",
-                       template="plotly_white")
+                       title="Emotion Timeline — Customer Session")
         fig.update_traces(marker_size=4, opacity=0.7)
         fig.update_layout(height=400)
         st.plotly_chart(fig, use_container_width=True)
@@ -178,7 +190,7 @@ def main():
         counts.columns = ["Emotion", "Count"]
         fig2 = px.pie(counts, names="Emotion", values="Count",
                       color="Emotion", color_discrete_map=EMOTION_COLORS,
-                      title="Session Emotion Distribution", template="plotly_white")
+                      title="Session Emotion Distribution")
         st.plotly_chart(fig2, use_container_width=True)
 
     # ── Tab 3: Arousal-Valence ────────────────────────────────────────────────
@@ -194,7 +206,6 @@ def main():
             color="Emotion", color_discrete_map=EMOTION_COLORS,
             size=[12]*7,
             title="Emotion Circumplex Model (Arousal vs Valence)",
-            template="plotly_white",
         )
         fig.add_hline(y=0, line_dash="dash", line_color="gray")
         fig.add_vline(x=0, line_dash="dash", line_color="gray")
@@ -238,8 +249,7 @@ def main():
                 "Accuracy %": [74.2, 65.1, 89.6],
             })
             fig = px.bar(metrics, x="Dataset", y="Accuracy %", color="Dataset",
-                         title="Model Accuracy by Dataset",
-                         template="plotly_white")
+                         title="Model Accuracy by Dataset")
             fig.update_layout(showlegend=False)
             st.plotly_chart(fig, use_container_width=True)
 

@@ -3,6 +3,7 @@ Streamlit dashboard: Credit Risk & Loan Default Intelligence Platform
 Tabs: Credit Decision | Portfolio Risk | Fairness Audit | Scorecard
 """
 
+import sys
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -12,18 +13,16 @@ from pathlib import Path
 
 BASE_DIR  = Path(__file__).resolve().parent.parent
 DATA_PROC = BASE_DIR / "data" / "processed"
+sys.path.insert(0, str(BASE_DIR.parent / "shared"))
+from ui_theme import apply_theme, hero_banner, kpi_card, section_header, sidebar_branding, style_plotly_fig
 
 st.set_page_config(
     page_title="Credit Risk Intelligence",
-    page_icon="🏦",
+    page_icon="💳",
     layout="wide",
 )
 
 GRADE_BASE = {"A": 0.04, "B": 0.08, "C": 0.14, "D": 0.22, "E": 0.30, "F": 0.40, "G": 0.50}
-
-def _dep(age):
-    if age <= 5: return np.exp(-0.16 * age)
-    return np.exp(-0.8) * np.exp(-0.10 * (age - 5))
 
 def estimate_pd(fico, dti, grade, delinq, revol_util, pub_rec):
     base = GRADE_BASE.get(grade, 0.15)
@@ -70,10 +69,24 @@ def _demo_loans(n=30_000):
 
 
 def main():
-    st.title("🏦 Credit Risk & Loan Default Intelligence Platform")
-    st.markdown("**Basel III-compliant PD/LGD scoring** — 2.5M Lending Club-scale loans | LightGBM + XGBoost + CatBoost | SHAP Adverse Action Codes")
+    apply_theme()
+    st.markdown(hero_banner(
+        "loans",
+        "Loan Default Prediction",
+        "Basel III-compliant PD scoring · 2.5M Lending Club-scale loans · ECOA-compliant SHAP adverse action codes",
+        stats=[("2.5M", "Loans Scored"), ("0.93", "AUC-ROC"), ("<0.03", "Fairness Gap"), ("JPMorgan · Goldman", "Target Buyers")],
+    ), unsafe_allow_html=True)
 
     df = load_loans()
+
+    with st.sidebar:
+        st.markdown(sidebar_branding("Loan Default Prediction", "loans"), unsafe_allow_html=True)
+        st.metric("Total Loans", f"{len(df):,}")
+        st.metric("Portfolio Default Rate", f"{df['loan_default'].mean()*100:.1f}%")
+        st.metric("Avg Loan Amount", f"${df['loan_amnt'].mean():,.0f}")
+        st.metric("Avg Interest Rate", f"{df['int_rate'].mean():.1f}%")
+        st.divider()
+        st.caption("Data: 2.5M synthetic Lending Club-scale applications")
 
     tab1, tab2, tab3, tab4 = st.tabs([
         "🎯 Credit Decision", "📊 Portfolio Risk", "⚖️ Fairness Audit", "📋 Scorecard"
@@ -99,14 +112,13 @@ def main():
             rate = round(3.5 + pd_score * 60, 2)
             max_loan = round(min(40000, loan_amnt * (1 - pd_score)), -2)
 
-            color = "#2ECC71" if "APPROVED" in decision else ("#F39C12" if "REVIEW" in decision else "#E74C3C")
+            color = "#10B981" if "APPROVED" in decision else ("#F59E0B" if "REVIEW" in decision else "#EF4444")
             st.markdown(f"<h2 style='color:{color}'>{decision}</h2>", unsafe_allow_html=True)
             st.metric("Probability of Default", f"{pd_score*100:.1f}%")
             st.metric("Credit Score", f"{score}")
             st.metric("Recommended Rate", f"{rate}%")
             st.metric("Max Loan Approved", f"${max_loan:,.0f}")
 
-            # Gauge chart for PD
             fig = go.Figure(go.Indicator(
                 mode="gauge+number",
                 value=pd_score * 100,
@@ -115,14 +127,14 @@ def main():
                     "axis": {"range": [0, 100]},
                     "bar": {"color": color},
                     "steps": [
-                        {"range": [0, 20], "color": "#2ECC71"},
-                        {"range": [20, 35], "color": "#F39C12"},
-                        {"range": [35, 100], "color": "#E74C3C"},
+                        {"range": [0, 20], "color": "#D1FAE5"},
+                        {"range": [20, 35], "color": "#FEF3C7"},
+                        {"range": [35, 100], "color": "#FEE2E2"},
                     ],
-                    "threshold": {"line": {"color": "black", "width": 4}, "value": pd_score * 100},
+                    "threshold": {"line": {"color": "#1E293B", "width": 4}, "value": pd_score * 100},
                 },
             ))
-            fig.update_layout(height=280)
+            style_plotly_fig(fig, height=280)
             st.plotly_chart(fig, use_container_width=True)
 
     # ── Tab 2: Portfolio Risk ─────────────────────────────────────────────────
@@ -139,28 +151,27 @@ def main():
             dr = df.groupby("grade")["loan_default"].mean().reset_index()
             dr.columns = ["Grade", "Default Rate"]
             dr["Default Rate %"] = dr["Default Rate"] * 100
-            fig = px.bar(dr, x="Grade", y="Default Rate %", color="Grade",
-                         title="Default Rate by Loan Grade", template="plotly_white")
+            fig = px.bar(dr, x="Grade", y="Default Rate %", color="Grade")
+            style_plotly_fig(fig, height=380, title="Default Rate by Loan Grade")
             fig.update_layout(showlegend=False)
             st.plotly_chart(fig, use_container_width=True)
         with col2:
             fig = px.histogram(df, x="fico_avg", color="loan_default",
                                nbins=40, barmode="overlay",
-                               color_discrete_map={0: "#2ECC71", 1: "#E74C3C"},
-                               title="FICO Distribution: Default vs Non-Default",
-                               template="plotly_white",
+                               color_discrete_map={0: "#10B981", 1: "#EF4444"},
                                labels={"loan_default": "Default"})
+            style_plotly_fig(fig, height=380, title="FICO Distribution: Default vs Non-Default")
             st.plotly_chart(fig, use_container_width=True)
 
         fig = px.scatter(
             df.sample(min(10000, len(df)), random_state=5),
             x="dti", y="fico_avg", color="loan_default",
-            color_discrete_map={0: "#3498DB", 1: "#E74C3C"},
-            opacity=0.4, template="plotly_white",
-            title="FICO vs DTI — Default Overlay",
+            color_discrete_map={0: "#3B82F6", 1: "#EF4444"},
+            opacity=0.4,
             labels={"loan_default": "Default (1=Yes)"},
         )
         fig.update_traces(marker_size=3)
+        style_plotly_fig(fig, height=450, title="FICO vs DTI — Default Overlay")
         st.plotly_chart(fig, use_container_width=True)
 
     # ── Tab 3: Fairness Audit ─────────────────────────────────────────────────
@@ -185,9 +196,8 @@ def main():
             st.subheader(f"Fairness by {label}")
             col1, col2 = st.columns(2)
             with col1:
-                fig = px.bar(fair_df, x=label, y="Avg Predicted PD",
-                             color=label, template="plotly_white",
-                             title=f"Avg Predicted Default Rate by {label}")
+                fig = px.bar(fair_df, x=label, y="Avg Predicted PD", color=label)
+                style_plotly_fig(fig, height=360, title=f"Avg Predicted Default Rate by {label}")
                 fig.update_layout(showlegend=False)
                 st.plotly_chart(fig, use_container_width=True)
             with col2:
@@ -200,13 +210,12 @@ def main():
             row["fico_avg"], row["dti"], row["grade"], row["delinq_2yrs"], 50, 0
         )) for _, row in df.sample(min(5000, len(df)), random_state=7).iterrows()])
 
-        fig = px.histogram(scores, nbins=50, color_discrete_sequence=["#3498DB"],
-                           title="Credit Score Distribution",
-                           labels={"value": "Credit Score"},
-                           template="plotly_white")
+        fig = px.histogram(scores, nbins=50, color_discrete_sequence=["#6366F1"],
+                           labels={"value": "Credit Score"})
         for x, label in [(580, "Poor"), (630, "Fair"), (670, "Good"), (720, "Very Good"), (760, "Excellent")]:
-            fig.add_vline(x=x, line_dash="dash", line_color="gray",
+            fig.add_vline(x=x, line_dash="dash", line_color="#94A3B8",
                           annotation_text=label, annotation_position="top right")
+        style_plotly_fig(fig, height=420, title="Credit Score Distribution")
         st.plotly_chart(fig, use_container_width=True)
 
         tier_counts = pd.cut(
@@ -215,7 +224,8 @@ def main():
         ).value_counts().reset_index()
         tier_counts.columns = ["Risk Tier", "Count"]
         fig2 = px.pie(tier_counts, names="Risk Tier", values="Count",
-                      title="Portfolio Risk Tier Distribution", template="plotly_white")
+                      color_discrete_sequence=px.colors.sequential.RdBu)
+        style_plotly_fig(fig2, height=400, title="Portfolio Risk Tier Distribution")
         st.plotly_chart(fig2, use_container_width=True)
 
 

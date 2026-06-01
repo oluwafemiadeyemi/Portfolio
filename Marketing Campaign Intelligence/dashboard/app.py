@@ -15,15 +15,16 @@ import sys
 BASE_DIR = Path(__file__).resolve().parent.parent
 DATA_PROC = BASE_DIR / "data" / "processed"
 sys.path.insert(0, str(BASE_DIR / "src"))
+sys.path.insert(0, str(BASE_DIR.parent / "shared"))
+from ui_theme import apply_theme, hero_banner, kpi_card, section_header, sidebar_branding, style_plotly_fig
 
 st.set_page_config(
     page_title="Marketing Campaign Intelligence",
-    page_icon="📊",
+    page_icon="📣",
     layout="wide",
     initial_sidebar_state="expanded",
 )
 
-# ─── Colour palette ──────────────────────────────────────────────────────────
 SEGMENT_COLORS = {
     "Champions":          "#2ECC71",
     "Loyal Customers":    "#3498DB",
@@ -68,7 +69,6 @@ def load_rules():
     p = DATA_PROC / "association_rules.parquet"
     if p.exists():
         df = pd.read_parquet(p)
-        # Cast numeric columns that may have been saved as object dtype
         for col in ["support", "confidence", "lift", "leverage", "conviction"]:
             if col in df.columns:
                 df[col] = pd.to_numeric(df[col], errors="coerce")
@@ -154,27 +154,28 @@ def _generate_demo_rules():
 # ─── Main app ────────────────────────────────────────────────────────────────
 
 def main():
-    st.title("📊 Marketing Campaign Intelligence Platform")
-    st.markdown(
-        "**Enterprise customer segmentation, RFM scoring, multi-touch attribution & basket analysis** "
-        "— powered by 5M+ synthetic marketing events + HDBSCAN / UMAP / FP-Growth"
-    )
+    apply_theme()
+    st.markdown(hero_banner(
+        "marketing",
+        "Marketing Campaign Intelligence",
+        "Enterprise customer segmentation · RFM scoring · multi-touch attribution on 5M+ events",
+        stats=[("5M+", "Marketing Events"), ("8", "Segments"), ("5", "Attribution Models"), ("P&G · Unilever", "Target Buyers")],
+    ), unsafe_allow_html=True)
 
     rfm = load_rfm()
     segments = load_segments()
     attribution = load_attribution()
     rules = load_rules()
 
-    # ── Sidebar KPIs ─────────────────────────────────────────────────────────
+    # ── Sidebar ───────────────────────────────────────────────────────────────
     with st.sidebar:
-        st.header("Portfolio KPIs")
-        col1, col2 = st.columns(2)
-        col1.metric("Total Customers", f"{len(rfm):,}")
-        col2.metric("Total Revenue", f"${rfm['monetary'].sum():,.0f}")
-        col1.metric("Avg CLV", f"${rfm['clv_estimate'].mean():,.0f}")
-        col2.metric("Champions", f"{(rfm['segment']=='Champions').sum():,}")
+        st.markdown(sidebar_branding("Marketing Campaign Intelligence", "marketing"), unsafe_allow_html=True)
+        st.metric("Total Customers", f"{len(rfm):,}")
+        st.metric("Total Revenue", f"${rfm['monetary'].sum():,.0f}")
+        st.metric("Avg CLV", f"${rfm['clv_estimate'].mean():,.0f}")
+        st.metric("Champions", f"{(rfm['segment']=='Champions').sum():,}")
         st.divider()
-        st.caption("Data: 5M synthetic marketing events + UCI Bank Marketing")
+        st.caption("Data: 5M synthetic events + UCI Bank Marketing")
 
     tab1, tab2, tab3, tab4 = st.tabs([
         "🗺️ Segment Explorer", "📈 RFM Analysis", "🎯 Attribution", "🛒 Market Basket"
@@ -189,12 +190,12 @@ def main():
             fig = px.scatter(
                 sample, x="umap_x", y="umap_y", color="segment_name",
                 color_discrete_map=SEGMENT_COLORS,
-                opacity=0.6, template="plotly_white",
-                title="UMAP 2D Embedding — Coloured by Segment",
+                opacity=0.6,
                 labels={"umap_x": "UMAP Dimension 1", "umap_y": "UMAP Dimension 2"},
             )
             fig.update_traces(marker_size=3)
-            fig.update_layout(height=550, legend_title="Segment")
+            style_plotly_fig(fig, height=550, title="UMAP 2D Embedding — Coloured by Segment")
+            fig.update_layout(legend_title="Segment")
             st.plotly_chart(fig, use_container_width=True)
         with col2:
             seg_counts = segments["segment_name"].value_counts().reset_index()
@@ -202,12 +203,11 @@ def main():
             fig2 = px.pie(
                 seg_counts, names="segment", values="count",
                 color="segment", color_discrete_map=SEGMENT_COLORS,
-                title="Segment Distribution",
             )
-            fig2.update_layout(height=400, showlegend=True)
+            style_plotly_fig(fig2, height=400, title="Segment Distribution")
+            fig2.update_layout(showlegend=True)
             st.plotly_chart(fig2, use_container_width=True)
 
-        # Segment profiles table
         st.subheader("Segment Profiles")
         seg_profile = rfm.groupby("segment").agg(
             Count=("customer_id", "count"),
@@ -227,48 +227,46 @@ def main():
         with col1:
             fig = px.histogram(
                 rfm.sample(min(50_000, len(rfm)), random_state=1),
-                x="recency_days", nbins=50, color_discrete_sequence=["#3498DB"],
-                title="Recency Distribution", template="plotly_white",
+                x="recency_days", nbins=50, color_discrete_sequence=["#6366F1"],
+                labels={"recency_days": "Recency (days)"},
             )
+            style_plotly_fig(fig, height=340, title="Recency Distribution")
             st.plotly_chart(fig, use_container_width=True)
         with col2:
             fig = px.histogram(
                 rfm.sample(min(50_000, len(rfm)), random_state=1),
-                x="frequency", nbins=30, color_discrete_sequence=["#2ECC71"],
-                title="Frequency Distribution", template="plotly_white",
+                x="frequency", nbins=30, color_discrete_sequence=["#10B981"],
             )
+            style_plotly_fig(fig, height=340, title="Frequency Distribution")
             st.plotly_chart(fig, use_container_width=True)
         with col3:
             fig = px.histogram(
                 rfm.sample(min(50_000, len(rfm)), random_state=1),
-                x="monetary", nbins=50, color_discrete_sequence=["#E74C3C"],
-                title="Monetary Distribution", template="plotly_white",
+                x="monetary", nbins=50, color_discrete_sequence=["#F59E0B"],
             )
+            style_plotly_fig(fig, height=340, title="Monetary Distribution")
             st.plotly_chart(fig, use_container_width=True)
 
-        st.subheader("Revenue by Segment")
         rev_seg = rfm.groupby("segment")["monetary"].sum().reset_index()
         rev_seg.columns = ["segment", "total_revenue"]
         rev_seg = rev_seg.sort_values("total_revenue", ascending=True)
         fig = px.bar(
             rev_seg, x="total_revenue", y="segment", orientation="h",
             color="segment", color_discrete_map=SEGMENT_COLORS,
-            title="Total Revenue by Segment", template="plotly_white",
         )
-        fig.update_layout(showlegend=False, height=400)
+        style_plotly_fig(fig, height=400, title="Total Revenue by Segment")
+        fig.update_layout(showlegend=False)
         st.plotly_chart(fig, use_container_width=True)
 
-        st.subheader("CLV vs Recency vs Frequency (Bubble Chart)")
         bubble = rfm.sample(min(5_000, len(rfm)), random_state=2)
         fig = px.scatter(
             bubble, x="recency_days", y="frequency",
             size="clv_estimate", color="segment",
             color_discrete_map=SEGMENT_COLORS,
-            size_max=25, opacity=0.7, template="plotly_white",
-            title="CLV Bubble Chart — Size = CLV",
+            size_max=25, opacity=0.7,
             labels={"recency_days": "Recency (days)", "frequency": "Purchase Frequency"},
         )
-        fig.update_layout(height=500)
+        style_plotly_fig(fig, height=500, title="CLV Bubble Chart — Size = CLV")
         st.plotly_chart(fig, use_container_width=True)
 
     # ── Tab 3: Attribution ────────────────────────────────────────────────────
@@ -287,34 +285,27 @@ def main():
             x=attr_values.index, y=attr_values.values,
             color=attr_values.index,
             labels={"x": "Channel", "y": "Attribution %"},
-            title=f"{model.replace('_', ' ').title()} Attribution by Channel",
-            template="plotly_white",
         )
-        fig.update_layout(showlegend=False, height=400)
+        style_plotly_fig(fig, height=400, title=f"{model.replace('_', ' ').title()} Attribution by Channel")
+        fig.update_layout(showlegend=False)
         st.plotly_chart(fig, use_container_width=True)
 
-        st.subheader("Model Comparison (All Channels)")
         fig2 = px.bar(
             attribution.reset_index().melt(id_vars="index", var_name="Model", value_name="Attribution %"),
             x="index", y="Attribution %", color="Model", barmode="group",
             labels={"index": "Channel"},
-            title="Attribution Comparison Across All Models",
-            template="plotly_white",
         )
-        fig2.update_layout(height=450)
+        style_plotly_fig(fig2, height=450, title="Attribution Comparison Across All Models")
         st.plotly_chart(fig2, use_container_width=True)
 
-        st.subheader("Shapley vs Last-Touch Difference")
         diff = (attribution["shapley"] - attribution["last_touch"]).reset_index()
         diff.columns = ["channel", "delta"]
         diff["direction"] = diff["delta"].apply(lambda x: "Under-credited" if x > 0 else "Over-credited")
         fig3 = px.bar(
             diff, x="channel", y="delta", color="direction",
-            color_discrete_map={"Under-credited": "#2ECC71", "Over-credited": "#E74C3C"},
-            title="Shapley vs Last-Touch: Channel Credit Delta",
-            template="plotly_white",
+            color_discrete_map={"Under-credited": "#10B981", "Over-credited": "#EF4444"},
         )
-        fig3.update_layout(height=400)
+        style_plotly_fig(fig3, height=400, title="Shapley vs Last-Touch: Channel Credit Delta")
         st.plotly_chart(fig3, use_container_width=True)
 
     # ── Tab 4: Market Basket ──────────────────────────────────────────────────
@@ -332,10 +323,9 @@ def main():
                 x="support", y="confidence", size="lift",
                 color="lift", color_continuous_scale="Viridis",
                 hover_data=["antecedents_str", "consequents_str"],
-                title="Support vs Confidence (Bubble = Lift)",
-                template="plotly_white", size_max=30,
+                size_max=30,
             )
-            fig.update_layout(height=450)
+            style_plotly_fig(fig, height=450, title="Support vs Confidence (Bubble = Lift)")
             st.plotly_chart(fig, use_container_width=True)
         with col2:
             st.dataframe(
@@ -346,7 +336,6 @@ def main():
                 height=430,
             )
 
-        # Product affinity heatmap
         products = sorted(set(
             rules["antecedents_str"].tolist() + rules["consequents_str"].tolist()
         ))[:12]
@@ -358,10 +347,8 @@ def main():
 
         fig4 = px.imshow(
             heatmap_data, color_continuous_scale="RdYlGn",
-            title="Product Affinity Heatmap (Lift Values)",
-            template="plotly_white",
         )
-        fig4.update_layout(height=450)
+        style_plotly_fig(fig4, height=450, title="Product Affinity Heatmap (Lift Values)")
         st.plotly_chart(fig4, use_container_width=True)
 
 

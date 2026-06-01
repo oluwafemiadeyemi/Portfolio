@@ -28,37 +28,37 @@ COLORS = {
 PROJECT_THEMES = {
     "marketing": {
         "accent": "#6366F1",
-        "gradient": "linear-gradient(135deg, #667EEA 0%, #764BA2 100%)",
-        "icon": "📊",
+        "gradient": "linear-gradient(135deg, #0F172A 0%, #1E1B4B 55%, #6366F1 100%)",
+        "icon": "📣",
     },
     "automotive": {
         "accent": "#F59E0B",
-        "gradient": "linear-gradient(135deg, #F093FB 0%, #F5576C 100%)",
+        "gradient": "linear-gradient(135deg, #0F172A 0%, #1C1400 55%, #D97706 100%)",
         "icon": "🚗",
     },
     "loans": {
-        "accent": "#10B981",
-        "gradient": "linear-gradient(135deg, #4FACFE 0%, #00F2FE 100%)",
-        "icon": "🏦",
+        "accent": "#EF4444",
+        "gradient": "linear-gradient(135deg, #0F172A 0%, #1C0A0A 55%, #DC2626 100%)",
+        "icon": "💳",
     },
     "malaria": {
-        "accent": "#EF4444",
-        "gradient": "linear-gradient(135deg, #F77062 0%, #FE5196 100%)",
+        "accent": "#10B981",
+        "gradient": "linear-gradient(135deg, #0F172A 0%, #042F2E 55%, #059669 100%)",
         "icon": "🔬",
     },
     "emotion": {
         "accent": "#8B5CF6",
-        "gradient": "linear-gradient(135deg, #A18CD1 0%, #FBC2EB 100%)",
+        "gradient": "linear-gradient(135deg, #0F172A 0%, #1E0A3C 55%, #7C3AED 100%)",
         "icon": "😊",
     },
     "music": {
-        "accent": "#EC4899",
-        "gradient": "linear-gradient(135deg, #F953C6 0%, #B91D73 100%)",
+        "accent": "#06B6D4",
+        "gradient": "linear-gradient(135deg, #0F172A 0%, #041B2A 55%, #0891B2 100%)",
         "icon": "🎵",
     },
     "reviews": {
-        "accent": "#F59E0B",
-        "gradient": "linear-gradient(135deg, #F6D365 0%, #FDA085 100%)",
+        "accent": "#F97316",
+        "gradient": "linear-gradient(135deg, #0F172A 0%, #1C0A00 55%, #EA580C 100%)",
         "icon": "⭐",
     },
 }
@@ -271,56 +271,68 @@ def img_to_b64(path: Path) -> str:
     return ""
 
 
-def hero_banner(project_key: str, title: str, subtitle: str) -> str:
-    """Full-width hero banner with gradient overlay + background image."""
+def hero_banner(project_key: str, title: str, subtitle: str,
+                stats: list = None) -> str:
+    """Full-width hero banner (Nexora/Lukana inspired) with optional stat pills."""
     theme = PROJECT_THEMES.get(project_key, PROJECT_THEMES["marketing"])
     img_path = ASSETS_DIR / f"{project_key}_hero.jpg"
     b64 = img_to_b64(img_path)
-    bg = (f'url("data:image/jpeg;base64,{b64}")' if b64
-          else "linear-gradient(135deg, #667EEA, #764BA2)")
+
+    if b64:
+        bg_layer = f'url("data:image/jpeg;base64,{b64}") center/cover'
+        overlay  = f'background:{theme["gradient"]}; opacity:0.88;'
+    else:
+        bg_layer = theme["gradient"]
+        overlay  = ""
+
+    stat_html = ""
+    if stats:
+        pills = "".join([
+            f'<div style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);'
+            f'border-radius:12px;padding:10px 18px;text-align:center;">'
+            f'<div style="font-size:1.4rem;font-weight:800;color:white;">{s[0]}</div>'
+            f'<div style="font-size:0.72rem;color:rgba(255,255,255,0.7);font-weight:600;'
+            f'text-transform:uppercase;letter-spacing:0.05em;margin-top:2px;">{s[1]}</div>'
+            f'</div>'
+            for s in stats
+        ])
+        stat_html = f'<div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:24px;">{pills}</div>'
+
+    overlay_div = f'<div style="position:absolute;inset:0;border-radius:20px;{overlay}"></div>' if overlay else ""
+
     return f"""
     <div style="
-        background: {bg};
-        background-size: cover;
-        background-position: center;
+        background: {bg_layer};
         border-radius: 20px;
-        padding: 52px 48px;
+        padding: 44px 48px 40px 48px;
         margin-bottom: 28px;
         position: relative;
         overflow: hidden;
     ">
-        <div style="
-            position: absolute; inset: 0;
-            background: {theme['gradient']};
-            opacity: 0.82;
-            border-radius: 20px;
-        "></div>
-        <div style="position: relative; z-index: 1;">
-            <div style="font-size: 3rem; margin-bottom: 8px;">{theme['icon']}</div>
-            <h1 style="
-                color: white; font-size: 2.2rem; font-weight: 800;
-                margin: 0 0 8px 0; line-height: 1.2;
-                text-shadow: 0 2px 8px rgba(0,0,0,0.2);
-            ">{title}</h1>
-            <p style="
-                color: rgba(255,255,255,0.88); font-size: 1.05rem;
-                margin: 0; font-weight: 400; max-width: 600px;
-            ">{subtitle}</p>
+        {overlay_div}
+        <!-- Decorative circles (Nexora style) -->
+        <div style="position:absolute;right:-20px;top:-20px;width:180px;height:180px;
+            background:rgba(255,255,255,0.06);border-radius:50%;"></div>
+        <div style="position:absolute;right:80px;bottom:-40px;width:120px;height:120px;
+            background:rgba(255,255,255,0.04);border-radius:50%;"></div>
+        <div style="position:absolute;right:30px;top:50%;width:60px;height:60px;
+            background:rgba(255,255,255,0.08);border-radius:50%;transform:translateY(-50%);"></div>
+        <!-- Content -->
+        <div style="position:relative;z-index:1;max-width:700px;">
+            <div style="display:inline-flex;align-items:center;gap:8px;
+                background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);
+                border-radius:20px;padding:4px 14px;margin-bottom:16px;">
+                <span style="font-size:1.2rem;">{theme['icon']}</span>
+                <span style="font-size:0.75rem;font-weight:700;color:rgba(255,255,255,0.9);
+                    text-transform:uppercase;letter-spacing:0.08em;">Enterprise AI Platform</span>
+            </div>
+            <h1 style="color:white;font-size:clamp(1.6rem,3vw,2.4rem);font-weight:800;
+                margin:0 0 10px 0;line-height:1.15;
+                text-shadow:0 2px 12px rgba(0,0,0,0.25);">{title}</h1>
+            <p style="color:rgba(255,255,255,0.82);font-size:1rem;
+                margin:0;font-weight:400;line-height:1.55;">{subtitle}</p>
+            {stat_html}
         </div>
-        <div style="
-            position: absolute; right: 32px; top: 50%;
-            transform: translateY(-50%);
-            width: 120px; height: 120px;
-            background: rgba(255,255,255,0.12);
-            border-radius: 50%;
-            backdrop-filter: blur(10px);
-        "></div>
-        <div style="
-            position: absolute; right: 80px; top: 20%;
-            width: 60px; height: 60px;
-            background: rgba(255,255,255,0.08);
-            border-radius: 50%;
-        "></div>
     </div>
     """
 
