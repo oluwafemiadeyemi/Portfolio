@@ -13,8 +13,6 @@ import sys
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 DATA_PROC = BASE_DIR / "data" / "processed"
-sys.path.insert(0, str(BASE_DIR.parent / "shared"))
-from ui_theme import apply_theme, hero_banner, kpi_card, section_header, sidebar_branding, style_plotly_fig
 
 st.set_page_config(
     page_title="Automotive Pricing Intelligence",
@@ -80,24 +78,10 @@ def estimate_price(make, year, odometer, condition, fuel, title_status):
 
 
 def main():
-    apply_theme()
-    st.markdown(hero_banner(
-        "automotive",
-        "Automotive Pricing Intelligence",
-        "Real-time vehicle valuation · LightGBM + XGBoost + CatBoost ensemble on 3M+ listings · SHAP explainability",
-        stats=[("3M+", "Listings"), ("4.2%", "Ensemble MAPE"), ("95% CI", "Conformal Intervals"), ("AutoNation · CarMax", "Target Buyers")],
-    ), unsafe_allow_html=True)
+    st.title("🚗 Automotive Pricing Intelligence Platform")
+    st.markdown("**Real-time vehicle valuation engine** — 3M+ synthetic Craigslist-scale listings | LightGBM + XGBoost + CatBoost ensemble + SHAP")
 
     df = load_vehicles()
-
-    with st.sidebar:
-        st.markdown(sidebar_branding("Automotive Pricing Intelligence", "automotive"), unsafe_allow_html=True)
-        st.metric("Total Listings", f"{len(df):,}")
-        st.metric("Avg Market Price", f"${df['price'].mean():,.0f}")
-        st.metric("Median Price", f"${df['price'].median():,.0f}")
-        st.metric("Avg Mileage", f"{df['odometer'].mean():,.0f}")
-        st.divider()
-        st.caption("Data: 3M synthetic Craigslist-scale vehicle listings")
 
     tab1, tab2, tab3, tab4 = st.tabs([
         "💰 Instant Valuation", "📊 Market Analysis", "📉 Depreciation Curves", "🔍 SHAP Explainer"
@@ -135,8 +119,8 @@ def main():
                 "Price":  list(breakdown.values()),
             })
             fig = px.funnel(waterfall, x="Price", y="Stage",
-                            color_discrete_sequence=["#F59E0B"])
-            style_plotly_fig(fig, height=380, title="Price Decomposition Waterfall")
+                            title="Price Decomposition Waterfall",
+                            color_discrete_sequence=["#3498DB"])
             st.plotly_chart(fig, use_container_width=True)
 
     # ── Tab 2: Market Analysis ────────────────────────────────────────────────
@@ -151,20 +135,20 @@ def main():
         col1, col2 = st.columns(2)
         with col1:
             price_by_make = df.groupby("make")["price"].median().sort_values(ascending=False).reset_index()
-            fig = px.bar(price_by_make, x="make", y="price", color="make")
-            style_plotly_fig(fig, height=400, title="Median Price by Make")
-            fig.update_layout(showlegend=False)
+            fig = px.bar(price_by_make, x="make", y="price", color="make",
+                         title="Median Price by Make", template="plotly_white")
+            fig.update_layout(showlegend=False, height=400)
             st.plotly_chart(fig, use_container_width=True)
         with col2:
             fig = px.histogram(df, x="price", nbins=80, color_discrete_sequence=["#3498DB"],
-                               title="Price Distribution")
+                               title="Price Distribution", template="plotly_white")
             fig.update_layout(height=400)
             st.plotly_chart(fig, use_container_width=True)
 
         fig = px.scatter(
             df.sample(min(10_000, len(df)), random_state=3),
             x="odometer", y="price", color="make",
-            opacity=0.4,
+            opacity=0.4, template="plotly_white",
             title="Price vs Mileage by Make",
             labels={"odometer": "Odometer (miles)", "price": "Price ($)"},
         )
@@ -191,7 +175,8 @@ def main():
             curve_df = pd.DataFrame(curves)
             fig = px.line(curve_df, x="Age (years)", y="Residual Value ($)",
                           color="Make", markers=True,
-                          title="Vehicle Depreciation Curves")
+                          title="Vehicle Depreciation Curves",
+                          template="plotly_white")
             fig.update_layout(height=500)
             st.plotly_chart(fig, use_container_width=True)
 
@@ -201,7 +186,8 @@ def main():
             )
             fig2 = px.line(pct_df, x="Age (years)", y="Retained %",
                            color="Make", markers=True,
-                           title="% Value Retained Over Time")
+                           title="% Value Retained Over Time",
+                           template="plotly_white")
             fig2.add_hline(y=50, line_dash="dash", line_color="gray",
                            annotation_text="50% residual value")
             fig2.update_layout(height=400)
@@ -241,6 +227,7 @@ def main():
             color="Color",
             color_discrete_map={"Positive": "#2ECC71", "Negative": "#E74C3C"},
             title="SHAP-Style Price Factor Breakdown",
+            template="plotly_white",
         )
         fig.update_layout(showlegend=False, height=400)
         st.plotly_chart(fig, use_container_width=True)

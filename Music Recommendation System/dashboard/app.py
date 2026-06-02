@@ -10,11 +10,8 @@ import plotly.express as px
 import plotly.graph_objects as go
 from pathlib import Path
 
-import sys
 BASE_DIR  = Path(__file__).resolve().parent.parent
 DATA_PROC = BASE_DIR / "data" / "processed"
-sys.path.insert(0, str(BASE_DIR.parent / "shared"))
-from ui_theme import apply_theme, hero_banner, kpi_card, section_header, sidebar_branding, style_plotly_fig
 
 st.set_page_config(
     page_title="Music Recommendation AI",
@@ -71,24 +68,13 @@ def _demo_user_recommendations(user_id: int, genre_pref: str, mood_pref: str, n:
 
 
 def main():
-    apply_theme()
-    st.markdown(hero_banner(
-        "music",
-        "Music Recommendation System",
-        "Next-gen personalisation · ALS + FAISS + BERT4Rec · 1M users · 100k tracks · 50M+ listening events",
-        stats=[("1M", "Users"), ("100k", "Tracks"), ("0.42", "Hit Rate@10"), ("Spotify · Apple Music", "Target Buyers")],
-    ), unsafe_allow_html=True)
+    st.title("🎵 Intelligent Music Discovery & Recommendation Platform")
+    st.markdown(
+        "**Next-gen personalisation engine** — 50M+ listening events | 1M users | 100k tracks | "
+        "ALS + Content-Based FAISS + BERT4Rec + LightGCN"
+    )
 
     tracks = load_tracks()
-
-    with st.sidebar:
-        st.markdown(sidebar_branding("Music Recommendation System", "music"), unsafe_allow_html=True)
-        st.metric("Total Tracks", f"{len(tracks):,}")
-        st.metric("Genres", str(tracks['genre'].nunique()) if 'genre' in tracks.columns else "12")
-        st.metric("Hit Rate@10", "0.42")
-        st.metric("NDCG@10", "0.31")
-        st.divider()
-        st.caption("50M+ synthetic listening events · 1M users")
 
     tab1, tab2, tab3, tab4 = st.tabs([
         "🎯 Discover", "🎼 Audio Features", "📈 Listening Patterns", "🔬 Model Comparison"
@@ -118,9 +104,9 @@ def main():
             fig = px.bar(
                 recs.head(15), x="Match Score", y="title", orientation="h",
                 color="genre" if "genre" in recs.columns else None,
+                title="Recommendation Scores", template="plotly_white",
             )
-            style_plotly_fig(fig, height=450, title="Recommendation Scores")
-            fig.update_layout(showlegend=True, yaxis={"categoryorder": "total ascending"})
+            fig.update_layout(height=450, showlegend=True, yaxis={"categoryorder": "total ascending"})
             st.plotly_chart(fig, use_container_width=True)
 
     # ── Tab 2: Audio Features ─────────────────────────────────────────────────
@@ -139,17 +125,18 @@ def main():
                 fig = px.scatter(
                     sample, x="energy", y="danceability",
                     color="genre" if "genre" in sample.columns else None,
-                    opacity=0.5, size_max=5,
+                    opacity=0.5, template="plotly_white",
+                    title="Energy vs Danceability by Genre",
+                    size_max=5,
                 )
                 fig.update_traces(marker_size=3)
-                style_plotly_fig(fig, height=400, title="Energy vs Danceability by Genre")
                 st.plotly_chart(fig, use_container_width=True)
         with col2:
             if "genre" in tracks.columns:
                 genre_counts = tracks["genre"].value_counts().reset_index()
                 genre_counts.columns = ["Genre", "Count"]
-                fig2 = px.pie(genre_counts, names="Genre", values="Count")
-                style_plotly_fig(fig2, height=400, title="Genre Distribution")
+                fig2 = px.pie(genre_counts, names="Genre", values="Count",
+                              title="Genre Distribution", template="plotly_white")
                 st.plotly_chart(fig2, use_container_width=True)
 
         if "valence" in tracks.columns and "energy" in tracks.columns:
@@ -157,7 +144,7 @@ def main():
             sample = tracks.sample(min(5000, len(tracks)), random_state=2)
             fig3 = px.scatter(
                 sample, x="valence", y="energy", color="mood" if "mood" in sample.columns else None,
-                opacity=0.5,
+                opacity=0.5, template="plotly_white",
                 title="Track Mood Map (Valence vs Energy)",
             )
             fig3.add_vline(x=0.5, line_dash="dash", line_color="gray")
@@ -184,7 +171,8 @@ def main():
         ])
         fig = px.bar(x=hours, y=listening_by_hour,
                      title="Listening Intensity by Hour of Day",
-                     labels={"x": "Hour (UTC)", "y": "Relative Activity"}, color_discrete_sequence=["#3498DB"])
+                     labels={"x": "Hour (UTC)", "y": "Relative Activity"},
+                     template="plotly_white", color_discrete_sequence=["#3498DB"])
         st.plotly_chart(fig, use_container_width=True)
 
         col1, col2 = st.columns(2)
@@ -193,14 +181,16 @@ def main():
             activity = [0.9, 0.85, 0.88, 0.90, 1.10, 1.35, 1.25]
             fig2 = px.line(x=days, y=activity, markers=True,
                            title="Weekly Listening Pattern",
-                           labels={"x": "Day", "y": "Relative Streams"})
+                           labels={"x": "Day", "y": "Relative Streams"},
+                           template="plotly_white")
             st.plotly_chart(fig2, use_container_width=True)
         with col2:
             genre_stream_share = {g: round(rng.uniform(3, 25), 1) for g in GENRES[:8]}
             gdf = pd.DataFrame(list(genre_stream_share.items()), columns=["Genre", "Share %"])
             fig3 = px.bar(gdf.sort_values("Share %", ascending=True),
                           x="Share %", y="Genre", orientation="h",
-                          color="Genre", title="Streaming Share by Genre")
+                          color="Genre", title="Streaming Share by Genre",
+                          template="plotly_white")
             fig3.update_layout(showlegend=False)
             st.plotly_chart(fig3, use_container_width=True)
 
@@ -217,6 +207,7 @@ def main():
             metrics.melt(id_vars="Model", var_name="Metric", value_name="Score"),
             x="Model", y="Score", color="Metric", barmode="group",
             title="Recommendation Quality Metrics (Offline Evaluation)",
+            template="plotly_white",
         )
         st.plotly_chart(fig, use_container_width=True)
 

@@ -16,8 +16,6 @@ BASE_DIR  = Path(__file__).resolve().parent.parent
 DATA_PROC = BASE_DIR / "data" / "processed"
 MODELS_DIR = BASE_DIR / "models"
 sys.path.insert(0, str(BASE_DIR / "src"))
-sys.path.insert(0, str(BASE_DIR.parent / "shared"))
-from ui_theme import apply_theme, hero_banner, kpi_card, section_header, sidebar_branding, style_plotly_fig
 
 st.set_page_config(
     page_title="Malaria Detection AI",
@@ -94,29 +92,17 @@ def predict_image(model, img: Image.Image) -> dict:
 
 
 def main():
-    apply_theme()
-    st.markdown(hero_banner(
-        "malaria",
-        "Malaria Detection AI",
-        "WHO-grade blood smear analysis · EfficientNetV2 + Grad-CAM · Sensitivity ≥95% · MC Dropout uncertainty",
-        stats=[("27.5k", "Cell Images"), ("≥95%", "Sensitivity"), ("0.97", "AUC"), ("WHO · Gates Foundation", "Target Buyers")],
-    ), unsafe_allow_html=True)
+    st.title("🔬 Global Health AI Diagnostics Platform — Malaria Detection")
+    st.markdown(
+        "**WHO-grade blood smear analysis** — EfficientNetV2 + ViT-B/16 ensemble | "
+        "Sensitivity ≥95% | Specificity ≥95% | Grad-CAM explainability"
+    )
 
     model = load_model()
     manifest = load_manifest()
 
-    with st.sidebar:
-        st.markdown(sidebar_branding("Malaria Detection AI", "malaria"), unsafe_allow_html=True)
-        st.metric("Test Cells", f"{len(manifest):,}")
-        st.metric("Sensitivity", "≥95%")
-        st.metric("Specificity", "≥95%")
-        st.metric("Model", "EfficientNetV2")
-        st.divider()
-        if model is None:
-            st.warning("Demo mode — model weights not found")
-        else:
-            st.success("Model loaded")
-        st.caption("Data: NIH 27.5k malaria cell images")
+    if model is None:
+        st.warning("Model weights not found — running in demo mode. Run `python src/model.py` to train.")
 
     tab1, tab2, tab3, tab4 = st.tabs([
         "🔬 Cell Analyzer", "📊 Model Performance", "🗄️ Dataset Explorer", "🌍 WHO Metrics"
@@ -189,7 +175,8 @@ def main():
         fig = go.Figure()
         fig.add_trace(go.Scatter(x=fpr, y=tpr, name="ROC (AUC=0.987)", line=dict(color="#3498DB", width=2)))
         fig.add_trace(go.Scatter(x=[0, 1], y=[0, 1], name="Random", line=dict(color="gray", dash="dash")))
-        fig.update_layout(title="ROC Curve", xaxis_title="FPR", yaxis_title="TPR", height=400)
+        fig.update_layout(title="ROC Curve", xaxis_title="FPR", yaxis_title="TPR",
+                          template="plotly_white", height=400)
         st.plotly_chart(fig, use_container_width=True)
 
         # Confusion matrix
@@ -211,7 +198,7 @@ def main():
         class_dist = pd.DataFrame({"Class": ["Parasitized", "Uninfected"], "Count": [13779, 13779]})
         fig = px.pie(class_dist, names="Class", values="Count",
                      color_discrete_map={"Parasitized": "#E74C3C", "Uninfected": "#2ECC71"},
-                     title="Class Distribution")
+                     title="Class Distribution", template="plotly_white")
         st.plotly_chart(fig, use_container_width=True)
 
         aug_df = pd.DataFrame({
@@ -221,7 +208,8 @@ def main():
             "Probability": [0.5, 0.5, 0.5, 0.5, 0.3, 0.2, 0.2, 0.4],
         })
         fig2 = px.bar(aug_df, x="Probability", y="Augmentation", orientation="h",
-                      title="Albumentations Augmentation Pipeline", color_discrete_sequence=["#9B59B6"])
+                      title="Albumentations Augmentation Pipeline",
+                      template="plotly_white", color_discrete_sequence=["#9B59B6"])
         fig2.update_layout(height=350)
         st.plotly_chart(fig2, use_container_width=True)
 
@@ -243,7 +231,8 @@ def main():
                     y=metrics_df["Model"], marker_color="#2ECC71")
         fig.add_bar(name="WHO Target", x=metrics_df["Metric"],
                     y=[95, 95, 95, 95], marker_color="#E74C3C", opacity=0.5)
-        fig.update_layout(barmode="group", title="Model vs WHO Performance Targets", yaxis_range=[85, 100])
+        fig.update_layout(barmode="group", title="Model vs WHO Performance Targets",
+                          template="plotly_white", yaxis_range=[85, 100])
         st.plotly_chart(fig, use_container_width=True)
 
 

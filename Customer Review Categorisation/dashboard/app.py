@@ -17,8 +17,6 @@ load_dotenv()
 BASE_DIR  = Path(__file__).resolve().parent.parent
 DATA_PROC = BASE_DIR / "data" / "processed"
 sys.path.insert(0, str(BASE_DIR / "src"))
-sys.path.insert(0, str(BASE_DIR.parent / "shared"))
-from ui_theme import apply_theme, hero_banner, kpi_card, section_header, sidebar_branding, style_plotly_fig
 
 st.set_page_config(
     page_title="Customer Review AI",
@@ -115,28 +113,17 @@ def _claude_classify(text: str) -> dict:
 
 
 def main():
-    apply_theme()
-    st.markdown(hero_banner(
-        "reviews",
-        "Customer Review Categorisation",
-        "Generative AI VOC platform · Claude API structured extraction · ChromaDB RAG · BERTopic discovery on 500k reviews",
-        stats=[("500k", "Reviews"), ("8", "Categories"), ("91%", "RAG Precision"), ("Amazon · Walmart", "Target Buyers")],
-    ), unsafe_allow_html=True)
+    st.title("⭐ Generative AI Customer Review Intelligence Platform")
+    st.markdown(
+        "**AI-Native VOC Platform** — Claude API (claude-sonnet-4-6) + RAG (ChromaDB) + BERTopic | "
+        "500k+ synthetic Amazon reviews (150M scale architecture)"
+    )
 
     api_configured = bool(os.getenv("ANTHROPIC_API_KEY"))
-    df = load_reviews()
+    if not api_configured:
+        st.warning("ANTHROPIC_API_KEY not set — running in rule-based demo mode. Add key to .env for full GenAI features.")
 
-    with st.sidebar:
-        st.markdown(sidebar_branding("Customer Review Categorisation", "reviews"), unsafe_allow_html=True)
-        st.metric("Reviews Indexed", f"{len(df):,}")
-        st.metric("Categories", "8")
-        st.metric("LLM Provider", os.getenv("PROVIDER", "ollama").title())
-        st.divider()
-        if api_configured:
-            st.success("Claude API connected")
-        else:
-            st.info("Demo mode — add ANTHROPIC_API_KEY")
-        st.caption("500k synthetic Amazon-style reviews")
+    df = load_reviews()
 
     tab1, tab2, tab3, tab4 = st.tabs([
         "🤖 Live Classifier", "📊 VOC Analytics", "🔍 RAG Explorer", "📋 Executive Report"
@@ -213,7 +200,7 @@ def main():
                 sent_counts.columns = ["Sentiment", "Count"]
                 fig = px.pie(sent_counts, names="Sentiment", values="Count",
                              color="Sentiment", color_discrete_map=SENTIMENT_COLORS,
-                             title="Sentiment Distribution")
+                             title="Sentiment Distribution", template="plotly_white")
                 st.plotly_chart(fig, use_container_width=True)
         with col2:
             if "review_category_label" in df.columns:
@@ -221,7 +208,7 @@ def main():
                 cat_counts.columns = ["Category", "Count"]
                 fig2 = px.bar(cat_counts.sort_values("Count"), x="Count", y="Category",
                               orientation="h", color_discrete_sequence=["#3498DB"],
-                              title="Review Category Distribution")
+                              title="Review Category Distribution", template="plotly_white")
                 fig2.update_layout(height=400, showlegend=False)
                 st.plotly_chart(fig2, use_container_width=True)
 
@@ -231,14 +218,15 @@ def main():
             rating_by_cat.columns = ["Category", "Avg Rating"]
             fig3 = px.bar(rating_by_cat, x="Avg Rating", y="Category", orientation="h",
                           color="Avg Rating", color_continuous_scale="RdYlGn",
-                          range_color=[1, 5], title="Avg Rating by Product Category")
+                          range_color=[1, 5], title="Avg Rating by Product Category",
+                          template="plotly_white")
             fig3.update_layout(height=400, showlegend=False)
             st.plotly_chart(fig3, use_container_width=True)
 
         if "rating" in df.columns:
             st.subheader("Rating Distribution")
             fig4 = px.histogram(df, x="rating", nbins=5, color_discrete_sequence=["#9B59B6"],
-                                title="Star Rating Distribution")
+                                title="Star Rating Distribution", template="plotly_white")
             st.plotly_chart(fig4, use_container_width=True)
 
     # ── Tab 3: RAG Explorer ───────────────────────────────────────────────────
@@ -291,7 +279,8 @@ def main():
                                 marker_color="#F39C12")
                     fig.add_bar(name="Negative", x=pivot.index, y=pivot.get("Negative", [0]*len(pivot)),
                                 marker_color="#E74C3C")
-                    fig.update_layout(barmode="stack", title="Sentiment by Product Category (%)", height=450)
+                    fig.update_layout(barmode="stack", title="Sentiment by Product Category (%)",
+                                      template="plotly_white", height=450)
                     st.plotly_chart(fig, use_container_width=True)
 
         with col2:
