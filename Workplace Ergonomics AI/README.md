@@ -1,4 +1,5 @@
 # 🏋️ Workplace Ergonomics AI
+[![Full Report](https://img.shields.io/badge/Full%20Report-docs%2Freports-informational?style=flat-square)](docs/reports/PROJECT_REPORT.md)
 
 > Cut musculoskeletal disorder claims by 43% and save $380k annually using YOLOv8-Pose real-time ergonomic risk scoring — ISO 9241-compliant REBA/RULA analysis at 30 FPS.
 
@@ -55,13 +56,48 @@ Musculoskeletal disorders (MSDs) are the leading cause of workplace injury in th
 | Keypoints Tracked | **17** (full body skeleton) |
 | Risk Alert Latency | **< 200ms** end-to-end |
 
-## Screenshots
 
-![REBA Score Distribution](docs/screenshots/01_reba_distribution.png)
-*REBA score distribution across monitored workforce: risk tier breakdown with facility-level heat map*
 
-![MSD Injury Reduction](docs/screenshots/02_injury_reduction.png)
-*Before/after MSD claim frequency: -43% reduction 6 months post-deployment with intervention timeline*
+
+## Screen Recording
+
+> **[Watch Dashboard Demo](https://github.com/oluwafemiadeyemi/Portfolio/blob/main/Workplace%20Ergonomics%20AI/docs/recordings/P08_dashboard.mp4)** (316 KB)
+
+The recording demonstrates full dashboard navigation — all tabs, interactive controls, charts, and live model inference.
+
+## Dashboard Screenshots
+
+### Live Dashboard
+
+![Overview](docs/screenshots/00_overview.png)
+*Overview*
+
+![Dashboard](docs/screenshots/01_dashboard.png)
+*Dashboard*
+
+![Reba Distribution](docs/screenshots/01_reba_distribution.png)
+*Reba Distribution*
+
+![Analysis](docs/screenshots/02_analysis.png)
+*Analysis*
+
+![Injury Reduction](docs/screenshots/02_injury_reduction.png)
+*Injury Reduction*
+
+![Recommendations](docs/screenshots/03_recommendations.png)
+*Recommendations*
+
+
+## Dashboard Screenshots
+
+### Live Dashboard
+
+![Reba Distribution](docs/screenshots/01_reba_distribution.png)
+*Reba Distribution*
+
+![Injury Reduction](docs/screenshots/02_injury_reduction.png)
+*Injury Reduction*
+
 
 ## Project Structure
 

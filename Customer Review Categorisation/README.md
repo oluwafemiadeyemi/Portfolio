@@ -1,4 +1,5 @@
 # Generative AI Customer Review Intelligence Platform
+[![Full Report](https://img.shields.io/badge/Full%20Report-docs%2Freports-informational?style=flat-square)](docs/reports/PROJECT_REPORT.md)
 
 **AI-Native VOC Platform** — Claude API + RAG + BERTopic + ChromaDB
 Fortune 500 buyers: Amazon, Walmart, every consumer-facing Fortune 500 brand
@@ -74,3 +75,46 @@ streamlit run dashboard/app.py --server.port 8507
 > ~$200M/year in labour. This platform classifies + routes + summarises reviews at
 > $0.003/review (with prompt caching), achieving ~$195M/year savings.
 > Structured adverse action data feeds directly into seller quality scorecards.
+
+
+## Dashboard Screenshots
+
+### Live Dashboard
+
+![Category Distribution](docs/screenshots/01_category_distribution.png)
+*Category Distribution*
+
+![Sentiment Distribution](docs/screenshots/02_sentiment_distribution.png)
+*Sentiment Distribution*
+
+![Category Sentiment Heatmap](docs/screenshots/03_category_sentiment_heatmap.png)
+*Category Sentiment Heatmap*
+
+
+## Screen Recording
+
+> **[Watch Dashboard Demo](https://github.com/oluwafemiadeyemi/Portfolio/blob/main/Customer%20Review%20Categorisation/docs/recordings/P17_dashboard.mp4)** (991 KB)
+
+The recording demonstrates full dashboard navigation — all tabs, interactive controls, charts, and live model inference.
+
+## Dashboard Screenshots
+
+### Live Dashboard
+
+![Overview](docs/screenshots/00_overview.png)
+*Overview*
+
+![Category Distribution](docs/screenshots/01_category_distribution.png)
+*Category Distribution*
+
+![Live Classifier](docs/screenshots/01_live_classifier.png)
+*Live Classifier*
+
+![Sentiment Distribution](docs/screenshots/02_sentiment_distribution.png)
+*Sentiment Distribution*
+
+![Voc Analytics](docs/screenshots/02_voc_analytics.png)
+*Voc Analytics*
+
+![Category Sentiment Heatmap](docs/screenshots/03_category_sentiment_heatmap.png)
+*Category Sentiment Heatmap*

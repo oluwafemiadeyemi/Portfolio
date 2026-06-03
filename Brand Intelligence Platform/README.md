@@ -1,4 +1,5 @@
 # 🏷️ Brand Intelligence Platform
+[![Full Report](https://img.shields.io/badge/Full%20Report-docs%2Freports-informational?style=flat-square)](docs/reports/PROJECT_REPORT.md)
 
 > Transform 6.9M customer reviews into real-time brand health signals, crisis alerts, and AI-generated executive narratives — built for Fortune 500 CMOs who cannot afford to be last to know.
 
@@ -57,16 +58,61 @@ The pipeline combines **RoBERTa** fine-tuned for aspect-level sentiment with **V
 | LLM Narrative Latency | **< 3 seconds** (Llama 3.2 local) |
 | False Positive Rate (crisis alerts) | **< 8%** |
 
-## Screenshots
 
-![Sentiment Trend Dashboard](docs/screenshots/01_sentiment_trend.png)
-*Rolling 30-day brand sentiment trend with crisis alert overlay across all monitored locations*
 
-![Aspect-Level Sentiment Heatmap](docs/screenshots/02_aspect_sentiment.png)
-*Aspect sentiment breakdown (service, price, ambiance, food quality) by business category and time period*
 
-![Topic Distribution Landscape](docs/screenshots/03_topic_distribution.png)
-*BERTopic 47-cluster landscape with top keywords, review volume, and sentiment polarity per topic*
+
+## Screen Recording
+
+> **[Watch Dashboard Demo](https://github.com/oluwafemiadeyemi/Portfolio/blob/main/Brand%20Intelligence%20Platform/docs/recordings/P01_dashboard.mp4)** (375 KB)
+
+The recording demonstrates full dashboard navigation — all tabs, interactive controls, charts, and live model inference.
+
+## Dashboard Screenshots
+
+### Live Dashboard
+
+![Overview](docs/screenshots/00_overview.png)
+*Overview*
+
+![Overview](docs/screenshots/01_overview.png)
+*Overview*
+
+![Sentiment Trend](docs/screenshots/01_sentiment_trend.png)
+*Sentiment Trend*
+
+![Aspect Analysis](docs/screenshots/02_aspect_analysis.png)
+*Aspect Analysis*
+
+![Aspect Sentiment](docs/screenshots/02_aspect_sentiment.png)
+*Aspect Sentiment*
+
+![Crisis Detection](docs/screenshots/03_crisis_detection.png)
+*Crisis Detection*
+
+
+## Dashboard Screenshots
+
+### Live Dashboard
+
+![Overview](docs/screenshots/00_overview.png)
+*Overview*
+
+![Overview](docs/screenshots/01_overview.png)
+*Overview*
+
+![Sentiment Trend](docs/screenshots/01_sentiment_trend.png)
+*Sentiment Trend*
+
+![Aspect Analysis](docs/screenshots/02_aspect_analysis.png)
+*Aspect Analysis*
+
+![Aspect Sentiment](docs/screenshots/02_aspect_sentiment.png)
+*Aspect Sentiment*
+
+![Crisis Detection](docs/screenshots/03_crisis_detection.png)
+*Crisis Detection*
+
 
 ## Project Structure
 

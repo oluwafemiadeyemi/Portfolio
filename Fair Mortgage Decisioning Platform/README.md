@@ -1,4 +1,5 @@
 # 🏠 Fair Mortgage Decisioning Platform
+[![Full Report](https://img.shields.io/badge/Full%20Report-docs%2Freports-informational?style=flat-square)](docs/reports/PROJECT_REPORT.md)
 
 > Automate mortgage underwriting 73% faster across 14M+ HMDA applications while provably closing racial lending gaps to < 0.03 disparity — the regulatory moat every major lender needs.
 
@@ -56,16 +57,61 @@ A **LightGBM gradient boosting classifier** is trained on 14M+ real HMDA 2022 Te
 | Applications in Training Data | **14,000,000+** |
 | Model Calibration (Brier Score) | **0.081** |
 
-## Screenshots
 
-![Approval Rates by Demographic](docs/screenshots/01_approval_rates.png)
-*Approval rate comparison before/after Fairlearn constraint: racial gap reduced from 11% to < 3%*
 
-![AUC by Income Bracket](docs/screenshots/02_auc_by_income.png)
-*Slice-based model performance: AUC consistency across income deciles confirms no proxy discrimination*
 
-![SHAP Decision Explanation](docs/screenshots/03_shap_explanation.png)
-*Per-application SHAP waterfall: automatic mapping to ECOA adverse action letter reason codes*
+
+## Screen Recording
+
+> **[Watch Dashboard Demo](https://github.com/oluwafemiadeyemi/Portfolio/blob/main/Fair%20Mortgage%20Decisioning%20Platform/docs/recordings/P03_dashboard.mp4)** (366 KB)
+
+The recording demonstrates full dashboard navigation — all tabs, interactive controls, charts, and live model inference.
+
+## Dashboard Screenshots
+
+### Live Dashboard
+
+![Overview](docs/screenshots/00_overview.png)
+*Overview*
+
+![Approval Rates](docs/screenshots/01_approval_rates.png)
+*Approval Rates*
+
+![Race](docs/screenshots/01_race.png)
+*Race*
+
+![Sex](docs/screenshots/02_sex.png)
+*Sex*
+
+![Shap Explanation](docs/screenshots/02_shap_explanation.png)
+*Shap Explanation*
+
+![Ethnicity](docs/screenshots/03_ethnicity.png)
+*Ethnicity*
+
+
+## Dashboard Screenshots
+
+### Live Dashboard
+
+![Overview](docs/screenshots/00_overview.png)
+*Overview*
+
+![Approval Rates](docs/screenshots/01_approval_rates.png)
+*Approval Rates*
+
+![Race](docs/screenshots/01_race.png)
+*Race*
+
+![Sex](docs/screenshots/02_sex.png)
+*Sex*
+
+![Shap Explanation](docs/screenshots/02_shap_explanation.png)
+*Shap Explanation*
+
+![Ethnicity](docs/screenshots/03_ethnicity.png)
+*Ethnicity*
+
 
 ## Project Structure
 

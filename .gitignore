@@ -91,10 +91,15 @@ credentials/
 *.swp
 *.swo
 
-# ── Keep docs/screenshots PNGs ───────────────────────────────────────────────
+# ── Keep docs/screenshots PNGs and recordings MP4 ────────────────────────────
 !**/docs/
 !**/docs/screenshots/
 !**/docs/screenshots/*.png
+!**/docs/recordings/
+!**/docs/recordings/*.mp4
+!**/docs/recordings/*.webm
+!**/docs/reports/
+!**/docs/reports/*.md
 
 # ── Keep metrics and model info JSON ─────────────────────────────────────────
 !**/models/metrics.json
@@ -107,6 +112,7 @@ monitor.log
 install_all_packages.bat
 MASTER_TRANSFORMATION_PLAN.md
 test_imports.py
+capture_dashboards.py
 
 # ── Portfolio Dashboard temp ──────────────────────────────────────────────────
 Portfolio\ Dashboard/utils/__pycache__/

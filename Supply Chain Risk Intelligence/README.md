@@ -1,4 +1,5 @@
 # ⛓️ Supply Chain Risk Intelligence
+[![Full Report](https://img.shields.io/badge/Full%20Report-docs%2Freports-informational?style=flat-square)](docs/reports/PROJECT_REPORT.md)
 
 > Detect supplier financial distress 12 months ahead of failure using SEC EDGAR filings, network contagion modeling, and Llama 3.2 AI narratives — the early warning system Goldman Sachs and Deloitte need.
 
@@ -56,16 +57,51 @@ An **XGBoost / LightGBM ensemble** extracts 40+ financial distress features from
 | Filing Analysis Latency | **< 4 seconds** (Llama 3.2 local) |
 | False Positive Rate | **< 14%** |
 
-## Screenshots
 
-![Distress Score Distribution](docs/screenshots/01_distress_distribution.png)
-*Probability of financial distress distribution across 5,000+ companies: high-risk tail identification*
+
+
+## Screen Recording
+
+> **[Watch Dashboard Demo](https://github.com/oluwafemiadeyemi/Portfolio/blob/main/Supply%20Chain%20Risk%20Intelligence/docs/recordings/P06_dashboard.mp4)** (422 KB)
+
+The recording demonstrates full dashboard navigation — all tabs, interactive controls, charts, and live model inference.
+
+## Dashboard Screenshots
+
+### Live Dashboard
+
+![Overview](docs/screenshots/00_overview.png)
+*Overview*
+
+![Distress Distribution](docs/screenshots/01_distress_distribution.png)
+*Distress Distribution*
+
+![Portfolio Overview](docs/screenshots/01_portfolio_overview.png)
+*Portfolio Overview*
+
+![Company Deep Dive](docs/screenshots/02_company_deep_dive.png)
+*Company Deep Dive*
 
 ![Sector Risk Heatmap](docs/screenshots/02_sector_risk_heatmap.png)
-*12-month forward risk heatmap by GICS sector and company size with contagion overlay*
+*Sector Risk Heatmap*
 
-![Altman Z-Score vs ML](docs/screenshots/03_altman_vs_ml.png)
-*ROC comparison: Altman Z-Score baseline vs. XGBoost vs. ensemble — AUC lift quantification*
+![Altman Vs Ml](docs/screenshots/03_altman_vs_ml.png)
+*Altman Vs Ml*
+
+
+## Dashboard Screenshots
+
+### Live Dashboard
+
+![Distress Distribution](docs/screenshots/01_distress_distribution.png)
+*Distress Distribution*
+
+![Sector Risk Heatmap](docs/screenshots/02_sector_risk_heatmap.png)
+*Sector Risk Heatmap*
+
+![Altman Vs Ml](docs/screenshots/03_altman_vs_ml.png)
+*Altman Vs Ml*
+
 
 ## Project Structure
 

@@ -1,4 +1,5 @@
 # 👥 People Analytics Platform
+[![Full Report](https://img.shields.io/badge/Full%20Report-docs%2Freports-informational?style=flat-square)](docs/reports/PROJECT_REPORT.md)
 
 > Predict employee attrition with 89% AUC, quantify $4.2M in annual retention savings, and map org-network influence — the workforce intelligence platform Fortune 500 CHROs actually use.
 
@@ -56,13 +57,61 @@ An **XGBoost attrition classifier** trained on 5,000+ IBM HR Extended employee r
 | Uplift Model Lift | **2.1×** vs. random intervention |
 | Time-to-Attrition Horizon | **90-day early warning** |
 
-## Screenshots
 
-![Attrition Risk Dashboard](docs/screenshots/01_attrition_dashboard.png)
-*Live attrition risk heatmap: department × tenure × risk tier with drill-down to individual employees*
 
-![SHAP Feature Importance](docs/screenshots/02_feature_importance.png)
-*SHAP beeswarm plot showing top drivers of attrition: overtime hours, salary delta, promotion lag*
+
+
+## Screen Recording
+
+> **[Watch Dashboard Demo](https://github.com/oluwafemiadeyemi/Portfolio/blob/main/People%20Analytics%20Platform/docs/recordings/P04_dashboard.mp4)** (743 KB)
+
+The recording demonstrates full dashboard navigation — all tabs, interactive controls, charts, and live model inference.
+
+## Dashboard Screenshots
+
+### Live Dashboard
+
+![Overview](docs/screenshots/00_overview.png)
+*Overview*
+
+![Attrition By Group](docs/screenshots/01_attrition_by_group.png)
+*Attrition By Group*
+
+![Attrition Dashboard](docs/screenshots/01_attrition_dashboard.png)
+*Attrition Dashboard*
+
+![Feature Importance](docs/screenshots/02_feature_importance.png)
+*Feature Importance*
+
+![Pay Equity](docs/screenshots/02_pay_equity.png)
+*Pay Equity*
+
+![Promotion Velocity](docs/screenshots/03_promotion_velocity.png)
+*Promotion Velocity*
+
+
+## Dashboard Screenshots
+
+### Live Dashboard
+
+![Overview](docs/screenshots/00_overview.png)
+*Overview*
+
+![Attrition By Group](docs/screenshots/01_attrition_by_group.png)
+*Attrition By Group*
+
+![Attrition Dashboard](docs/screenshots/01_attrition_dashboard.png)
+*Attrition Dashboard*
+
+![Feature Importance](docs/screenshots/02_feature_importance.png)
+*Feature Importance*
+
+![Pay Equity](docs/screenshots/02_pay_equity.png)
+*Pay Equity*
+
+![Promotion Velocity](docs/screenshots/03_promotion_velocity.png)
+*Promotion Velocity*
+
 
 ## Project Structure
 

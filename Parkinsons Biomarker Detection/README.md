@@ -1,4 +1,5 @@
 # 🧠 Parkinsons Biomarker Detection
+[![Full Report](https://img.shields.io/badge/Full%20Report-docs%2Freports-informational?style=flat-square)](docs/reports/PROJECT_REPORT.md)
 
 > Detect Parkinson's Disease 5+ years before motor symptom onset using voice, gait, and tremor biomarkers — AUC 0.97 with uncertainty quantification for clinical-grade confidence intervals.
 
@@ -55,13 +56,61 @@ A **Gradient Boosting Machine (GBM) / Random Forest ensemble** extracts 22 telem
 | Early Detection Horizon | **5+ years before motor symptoms** |
 | Dataset Size | **9,500 participants** |
 
-## Screenshots
+
+
+
+
+## Screen Recording
+
+> **[Watch Dashboard Demo](https://github.com/oluwafemiadeyemi/Portfolio/blob/main/Parkinsons%20Biomarker%20Detection/docs/recordings/P05_dashboard.mp4)** (395 KB)
+
+The recording demonstrates full dashboard navigation — all tabs, interactive controls, charts, and live model inference.
+
+## Dashboard Screenshots
+
+### Live Dashboard
+
+![Overview](docs/screenshots/00_overview.png)
+*Overview*
 
 ![Biomarker Scatter](docs/screenshots/01_biomarker_scatter.png)
-*UMAP projection of voice biomarker features: PD vs. healthy control separation across 9,500 participants*
+*Biomarker Scatter*
 
-![ROC Curve](docs/screenshots/02_roc_curve.png)
-*ROC curves by modality (voice, gait, tremor) and multimodal fusion — AUC 0.97 on held-out test set*
+![Population Distribution](docs/screenshots/01_population_distribution.png)
+*Population Distribution*
+
+![Roc Curve](docs/screenshots/02_roc_curve.png)
+*Roc Curve*
+
+![Violin Plots](docs/screenshots/02_violin_plots.png)
+*Violin Plots*
+
+![Correlation Matrix](docs/screenshots/03_correlation_matrix.png)
+*Correlation Matrix*
+
+
+## Dashboard Screenshots
+
+### Live Dashboard
+
+![Overview](docs/screenshots/00_overview.png)
+*Overview*
+
+![Biomarker Scatter](docs/screenshots/01_biomarker_scatter.png)
+*Biomarker Scatter*
+
+![Population Distribution](docs/screenshots/01_population_distribution.png)
+*Population Distribution*
+
+![Roc Curve](docs/screenshots/02_roc_curve.png)
+*Roc Curve*
+
+![Violin Plots](docs/screenshots/02_violin_plots.png)
+*Violin Plots*
+
+![Correlation Matrix](docs/screenshots/03_correlation_matrix.png)
+*Correlation Matrix*
+
 
 ## Project Structure
 

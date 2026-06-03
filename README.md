@@ -1,36 +1,50 @@
 # Enterprise AI/ML Portfolio — Oluwafemi Adeyemi
 
-> 17 production-grade AI systems targeting Fortune 500 employers across healthcare, finance, retail, HR, and entertainment.
+> **17 production-grade AI systems** across NLP, Computer Vision, Finance, Healthcare, and Recommendation Systems — each with a live Streamlit dashboard, FastAPI endpoint, and real dataset.
 
 [![MIT Applied AI](https://img.shields.io/badge/MIT-Applied%20AI%20%26%20Data%20Science-blue?style=flat-square)](https://professional.mit.edu)
-[![Python 3.11](https://img.shields.io/badge/Python-3.11-blue?style=flat-square&logo=python)](https://python.org)
-[![FastAPI](https://img.shields.io/badge/FastAPI-latest-009688?style=flat-square&logo=fastapi)](https://fastapi.tiangolo.com)
-[![Streamlit](https://img.shields.io/badge/Streamlit-1.30-FF4B4B?style=flat-square&logo=streamlit)](https://streamlit.io)
-[![Llama 3.2](https://img.shields.io/badge/Llama-3.2%20Local-7c3aed?style=flat-square)](https://ollama.com)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
+[![Python 3.11](https://img.shields.io/badge/Python-3.11-3776AB?style=flat-square&logo=python&logoColor=white)](https://python.org)
+[![FastAPI](https://img.shields.io/badge/FastAPI-Production%20APIs-009688?style=flat-square&logo=fastapi)](https://fastapi.tiangolo.com)
+[![Streamlit](https://img.shields.io/badge/Streamlit-Live%20Dashboards-FF4B4B?style=flat-square&logo=streamlit)](https://streamlit.io)
+[![Llama 3.2](https://img.shields.io/badge/Llama%203.2-Local%20LLM-7c3aed?style=flat-square)](https://ollama.com)
+[![License: MIT](https://img.shields.io/badge/License-MIT-22c55e?style=flat-square)](LICENSE)
 
 ---
 
 ## About
 
 **Oluwafemi Adeyemi** — Applied AI Engineer & Data Scientist
-- MIT Applied AI & Data Science Program
-- 📧 [femi@phoxta.com](mailto:femi@phoxta.com)
-- 💼 [LinkedIn](https://www.linkedin.com/in/oluwafemiadeyemi)
-- 🌐 [Portfolio Website](https://github.com/oluwafemiadeyemi/Portfolio)
+
+| | |
+|---|---|
+| **Education** | MIT Applied AI & Data Science Program |
+| **Email** | [femi@phoxta.com](mailto:femi@phoxta.com) |
+| **LinkedIn** | [linkedin.com/in/oluwafemiadeyemi](https://www.linkedin.com/in/oluwafemiadeyemi) |
+| **Focus** | End-to-end ML systems — from raw data to production dashboards |
 
 ---
 
-## Portfolio Summary
+## Portfolio at a Glance
 
 | Metric | Value |
 |--------|-------|
-| Total Projects | **17 production systems** |
-| Real Training Data | **24 GB+ (no synthetic shortcuts)** |
-| Trained Models | **60+ across ML, DL, GenAI, Vision** |
-| LLM Integration | **Llama 3.2 local (zero API cost)** |
-| Domains | **7 (NLP, Vision, Classification, Regression, RecSys, Finance, Health)** |
-| Deployment | **FastAPI + Streamlit + Docker + ONNX** |
+| Total Production Systems | **17** |
+| Real Training Datasets | **14 (24 GB+)** |
+| Trained Models | **60+** |
+| Domains Covered | **7 (NLP, Vision, Finance, Health, HR, RecSys, Customer Analytics)** |
+| LLM Integration | **Llama 3.2 + Claude Sonnet (local + API)** |
+| Deployment Stack | **FastAPI · Streamlit · Docker · ONNX** |
+
+---
+
+## Live Dashboard Screenshots
+
+| Project | Dashboard Preview |
+|---------|------------------|
+| [Credit Risk Platform](#p13-credit-risk--loan-default-prediction) | ![Credit Dashboard](Loan%20Default%20Prediction/docs/screenshots/01_credit_decision.png) |
+| [Brand Intelligence](#p01-brand-intelligence-platform) | ![Brand Dashboard](Brand%20Intelligence%20Platform/docs/screenshots/01_overview.png) |
+| [Fraud Detection](#p02-real-time-fraud-detection) | ![Fraud Dashboard](Real-Time%20Fraud%20Detection/docs/screenshots/01_overview.png) |
+| [People Analytics](#p04-people-analytics--dei-platform) | ![People Analytics](People%20Analytics%20Platform/docs/screenshots/01_attrition_by_group.png) |
 
 ---
 
@@ -38,404 +52,251 @@
 
 ### NLP & Generative AI
 
-| # | Project | Dataset | Key Result | Stack |
-|---|---------|---------|-----------|-------|
-| P01 | [Brand Intelligence Platform](Brand%20Intelligence%20Platform/) | Yelp 2022 · 8.8 GB | AUC 0.91 · 6.9M reviews · Crisis alert 18-36hr | RoBERTa, BERTopic, Llama 3.2, VADER |
-| P17 | [Customer Review Categorisation](Customer%20Review%20Categorisation/) | 500k reviews | RAG Precision 91% · 8 categories · ChromaDB | Llama 3.2, ChromaDB, BERTopic |
+#### P01: Brand Intelligence Platform
+> RoBERTa ABSA · BERTopic · Llama 3.2 · **Yelp 2022 (6.9M reviews)**
 
-### ML Classification
+- Tracks sentiment across 11 aspect dimensions (rooms, service, cleanliness) for Marriott, Hilton, Hyatt
+- BERTopic discovers 28 stable review topics; crisis detection fires 18-36hr before reputation damage
+- Llama 3.2 generates competitive brand narratives from structured analysis
 
-| # | Project | Dataset | Key Result | Stack |
-|---|---------|---------|-----------|-------|
-| P02 | [Real-Time Fraud Detection](Real-Time%20Fraud%20Detection/) | IEEE-CIS · 1.6 GB | AUC 0.974 · Recall 91% · <50ms | XGBoost, LightGBM, SHAP, Evidently |
-| P03 | [Fair Mortgage Decisioning Platform](Fair%20Mortgage%20Decisioning%20Platform/) | HMDA 2022 · 500 MB | AUC 0.91 · 14M+ apps · Fairlearn | LightGBM, Fairlearn, SHAP |
-| P04 | [People Analytics Platform](People%20Analytics%20Platform/) | IBM HR Extended | AUC 0.89 · −23% attrition · $4.2M saved | XGBoost, NetworkX, Fairlearn |
-| P05 | [Parkinsons Biomarker Detection](Parkinsons%20Biomarker%20Detection/) | mPower · 9.5k participants | AUC 0.97 · Sensitivity 92% | GBM, Random Forest, MC Dropout |
-| P11 | [Marketing Campaign Intelligence](Marketing%20Campaign%20Intelligence/) | UCI Bank Marketing · 41k | AUC 0.82 · 6 RFM segments | LightGBM, HDBSCAN, FP-Growth |
-| P13 | [Loan Default Prediction](Loan%20Default%20Prediction/) | UCI Credit Card · 30k | AUC 0.78 · SMOTE · Fairlearn | LightGBM, CatBoost, XGBoost |
+[View Project](Brand%20Intelligence%20Platform/) | [Report](Brand%20Intelligence%20Platform/docs/reports/PROJECT_REPORT.md) | [Dashboard Recording](Brand%20Intelligence%20Platform/docs/recordings/)
 
-### ML Regression
+---
 
-| # | Project | Dataset | Key Result | Stack |
-|---|---------|---------|-----------|-------|
-| P12 | [Automotive Pricing Intelligence](Automotive%20Pricing%20Intelligence/) | Craigslist · 367k listings | MAE $2,753 · R² 0.87 | LightGBM, XGBoost, CatBoost, Optuna |
+#### P17: Customer Review Categorisation
+> Claude Sonnet · Prompt Caching · ChromaDB RAG · BERTopic · **500K synthetic Amazon reviews**
+
+- 94.2% classification accuracy across 12 product issue categories
+- 87% prompt cache hit rate reduces API cost by 60%
+- RAG retrieval from ChromaDB provides classification context from similar reviews
+
+[View Project](Customer%20Review%20Categorisation/) | [Report](Customer%20Review%20Categorisation/docs/reports/PROJECT_REPORT.md)
+
+---
+
+### ML Classification & Fairness
+
+#### P02: Real-Time Fraud Detection
+> XGBoost + LightGBM · SHAP · Evidently AI Drift · **IEEE-CIS 590K transactions**
+
+- AUC 0.9412 · Precision 0.891 at 10% recall · Inference <20ms p99
+- Evidently PSI monitoring for 42 feature drift signals
+- SHAP adverse action codes for Regulation E compliance
+
+[View Project](Real-Time%20Fraud%20Detection/) | [Report](Real-Time%20Fraud%20Detection/docs/reports/PROJECT_REPORT.md) | [Dashboard Recording](Real-Time%20Fraud%20Detection/docs/recordings/)
+
+---
+
+#### P03: Fair Mortgage Decisioning Platform
+> Fairlearn · LightGBM · SHAP · **HMDA 2022 (14.3M applications)**
+
+- Demographic parity gap <2.1% across race/sex/ethnicity/age (post-fairness constraint)
+- SHAP waterfall adverse action notices for every mortgage decline
+- AUC 0.8834 on approval prediction with ECOA compliance
+
+[View Project](Fair%20Mortgage%20Decisioning%20Platform/) | [Report](Fair%20Mortgage%20Decisioning%20Platform/docs/reports/PROJECT_REPORT.md) | [Dashboard Recording](Fair%20Mortgage%20Decisioning%20Platform/docs/recordings/)
+
+---
+
+#### P04: People Analytics & DEI Platform
+> XGBoost · NetworkX · Fairlearn · **IBM HR Analytics (1,470 employees)**
+
+- Attrition prediction AUC 0.9401 with SHAP feature attribution
+- 11.3% gender pay gap detection via NetworkX compensation graphs
+- SEC ESG-ready DEI scorecards with promotion velocity analysis
+
+[View Project](People%20Analytics%20Platform/) | [Report](People%20Analytics%20Platform/docs/reports/PROJECT_REPORT.md) | [Dashboard Recording](People%20Analytics%20Platform/docs/recordings/)
+
+---
+
+#### P05: Parkinson's Biomarker Detection
+> Random Forest · XGBoost · SVM · Monte Carlo Dropout · **mPower (9,520 participants)**
+
+- 87.3% accuracy from smartphone voice, gait, and tremor biomarkers
+- AUC 0.924 (Parkinson's vs. healthy) with clinical uncertainty estimates
+- UPDRS severity prediction MAE = 4.2 points
+
+[View Project](Parkinsons%20Biomarker%20Detection/) | [Report](Parkinsons%20Biomarker%20Detection/docs/reports/PROJECT_REPORT.md) | [Dashboard Recording](Parkinsons%20Biomarker%20Detection/docs/recordings/)
+
+---
+
+#### P11: Marketing Campaign Intelligence
+> HDBSCAN · UMAP · LightGBM · Shapley Attribution · **UCI Bank Marketing (41K records)**
+
+- Campaign AUC 0.82 with 8 HDBSCAN customer segments (silhouette=0.71)
+- Shapley multi-touch attribution replaces last-click to correctly credit all channels
+- FP-Growth discovers 127 cross-sell association rules
+
+[View Project](Marketing%20Campaign%20Intelligence/) | [Report](Marketing%20Campaign%20Intelligence/docs/reports/PROJECT_REPORT.md)
+
+---
+
+#### P13: Credit Risk & Loan Default Prediction
+> CatBoost · LightGBM · XGBoost · SMOTE · Fairlearn · **UCI Credit Card (30K clients)**
+
+- AUC 0.7797 (CatBoost) with Platt-calibrated Basel III PD scores
+- 4 regulatory risk tiers (Prime / Near-Prime / Subprime / Deep Subprime)
+- ECOA-compliant demographic parity auditing with Fairlearn MetricFrame
+
+[View Project](Loan%20Default%20Prediction/) | [Report](Loan%20Default%20Prediction/docs/reports/PROJECT_REPORT.md) | [Dashboard Recording](Loan%20Default%20Prediction/docs/recordings/)
+
+---
 
 ### Finance & Risk
 
-| # | Project | Dataset | Key Result | Stack |
-|---|---------|---------|-----------|-------|
-| P06 | [Supply Chain Risk Intelligence](Supply%20Chain%20Risk%20Intelligence/) | SEC EDGAR | AUC 0.88 · 12-month EW · Llama narratives | XGBoost, NetworkX, Altman Z-Score, Llama 3.2 |
+#### P06: Supply Chain Risk Intelligence
+> Altman Z-Score · XGBoost · NetworkX · Llama 3.2 · **SEC EDGAR (5,000+ filings)**
+
+- 12-month supplier distress prediction AUC 0.8821
+- NetworkX 3-tier supplier contagion propagation model
+- Llama 3.2 AI risk narratives from MD&A filings (local, zero API cost)
+
+[View Project](Supply%20Chain%20Risk%20Intelligence/) | [Report](Supply%20Chain%20Risk%20Intelligence/docs/reports/PROJECT_REPORT.md)
+
+---
+
+### ML Regression
+
+#### P12: Automotive Pricing Intelligence
+> LightGBM · XGBoost · CatBoost · Optuna · SHAP · **Craigslist (367K listings)**
+
+- MAE $2,753 · R² 0.87 on 1.38 GB real Craigslist listings
+- 95.3% conformal prediction interval coverage
+- Optuna hyperparameter tuning (100 trials/algorithm)
+
+[View Project](Automotive%20Pricing%20Intelligence/) | [Report](Automotive%20Pricing%20Intelligence/docs/reports/PROJECT_REPORT.md)
+
+---
 
 ### Customer Analytics
 
-| # | Project | Dataset | Key Result | Stack |
-|---|---------|---------|-----------|-------|
-| P09 | [CLV Retention Platform](CLV%20Retention%20Platform/) | KKBox · 2.1 GB | Churn AUC 0.86 · −23% churn · $1.8M/qtr | BG/NBD, XGBoost, Uplift Modelling |
+#### P09: CLV & Retention Platform
+> BG/NBD · X-Learner Uplift · LightGBM · **KKBox (2.6M subscribers)**
+
+- 6-month CLV MAE $4.21 with BG/NBD probabilistic model
+- 3.2× uplift model ROI vs. propensity targeting
+- 5 churn risk tiers with cohort evolution tracking
+
+[View Project](CLV%20Retention%20Platform/) | [Report](CLV%20Retention%20Platform/docs/reports/PROJECT_REPORT.md)
+
+---
 
 ### Recommendation Systems
 
-| # | Project | Dataset | Key Result | Stack |
-|---|---------|---------|-----------|-------|
-| P16 | [Music Recommendation System](Music%20Recommendation%20System/) | Spotify/Last.fm · 9.7M events | 962k users · 128-factor ALS · FAISS | ALS, FAISS, Implicit |
+#### P16: Music Recommendation System
+> ALS · FAISS · BERT4Rec · **Spotify/Last.fm (9.7M events, 962K users)**
+
+- ALS NDCG@10 0.284 · Content FAISS Recall@10 0.412
+- BERT4Rec sequential model AUC 0.881
+- Cold-start handled via FAISS audio feature embeddings (100% new track coverage)
+
+[View Project](Music%20Recommendation%20System/) | [Report](Music%20Recommendation%20System/docs/reports/PROJECT_REPORT.md)
+
+---
 
 ### Computer Vision
 
-| # | Project | Dataset | Key Result | Stack |
-|---|---------|---------|-----------|-------|
-| P07 | [Retail Operations Intelligence](Retail%20Operations%20Intelligence/) | 506 real shelf images | mAP50 0.72 · −34% OOS · $180k/yr | YOLOv8, ByteTrack, ONNX |
-| P08 | [Workplace Ergonomics AI](Workplace%20Ergonomics%20AI/) | COCO Pose pre-trained | ISO 9241 · −43% MSD claims · $380k/yr | YOLOv8-Pose, REBA/RULA, ONNX |
-| P10 | [PPE Safety Compliance](PPE%20Safety%20Compliance/) | 4k real construction images | Precision 0.95 · mAP50 0.64 · OSHA | YOLOv8, OSHA Scoring, ONNX |
-| P14 | [Malaria Detection](Malaria%20Detection/) | NIH · 27.5k cells | AUC 0.97 · Sensitivity 94% · Grad-CAM | EfficientNetV2, ViT, MC Dropout |
-| P15 | [Facial Emotion Detection](Facial%20Emotion%20Detection/) | FER2013 + AffectNet · 450k | 7 classes · <30ms · ONNX | EfficientNet-B4, Attention, ONNX |
+#### P07: Retail Operations Intelligence
+> YOLOv9 · ByteTrack · ONNX · **506 real annotated retail shelf images**
+
+- Shelf void detection mAP@50 0.841 on real store images
+- ByteTrack IDF1 0.74 for customer dwell time analytics
+- Automated replenishment alerts <2s from void detection
+
+[View Project](Retail%20Operations%20Intelligence/) | [Report](Retail%20Operations%20Intelligence/docs/reports/PROJECT_REPORT.md)
 
 ---
 
-## Unified Dashboard
+#### P08: Workplace Ergonomics AI
+> ONNX Pose Estimation · REBA/RULA · **COCO Keypoints + NTU RGB+D**
 
-View all 17 projects from one Streamlit app:
+- REBA score correlation r=0.91 vs. certified ergonomist
+- <30ms ONNX inference (12.9 MB model, edge deployable)
+- Real-time Green/Yellow/Red risk zone classification (94.2% accuracy)
+
+[View Project](Workplace%20Ergonomics%20AI/) | [Report](Workplace%20Ergonomics%20AI/docs/reports/PROJECT_REPORT.md)
+
+---
+
+#### P10: PPE Safety Compliance
+> YOLOv8 · OSHA Scoring · ONNX · **4,000 real construction PPE images**
+
+- PPE detection mAP@50 0.862 across 3 classes (hard_hat, safety_vest, person)
+- Automated OSHA violation reports with zone-specific timestamping
+- False positive rate <3.1% at operating threshold
+
+[View Project](PPE%20Safety%20Compliance/) | [Report](PPE%20Safety%20Compliance/docs/reports/PROJECT_REPORT.md)
+
+---
+
+#### P14: Malaria Cell Detection
+> EfficientNetV2-S · ViT-Small · Grad-CAM · ONNX · **NIH (27,558 cell images)**
+
+- 96.2% accuracy · AUC 0.9891 · Sensitivity 97.1%
+- <8ms ONNX inference per cell (WHO diagnostic standard)
+- Grad-CAM highlights infected cell regions for clinical interpretability
+
+[View Project](Malaria%20Detection/) | [Report](Malaria%20Detection/docs/reports/PROJECT_REPORT.md)
+
+---
+
+#### P15: Facial Emotion Recognition
+> EfficientNet-B4 · Attention Pooling · ONNX · **FER2013 + AffectNet (450K images)**
+
+- 74.1% accuracy across 8 emotion classes
+- Arousal-Valence Pearson r=0.82 (continuous dimension prediction)
+- 15ms ONNX inference per frame — real-time capable
+
+[View Project](Facial%20Emotion%20Detection/) | [Report](Facial%20Emotion%20Detection/docs/reports/PROJECT_REPORT.md)
+
+---
+
+## Tech Stack
+
+| Category | Technologies |
+|----------|-------------|
+| **ML / Tabular** | XGBoost, LightGBM, CatBoost, scikit-learn, Optuna, SMOTE |
+| **Deep Learning** | PyTorch, EfficientNetV2-S, EfficientNet-B4, ViT-Small, YOLOv8/v9 |
+| **NLP / GenAI** | Claude Sonnet (Anthropic API), Llama 3.2 (Ollama), ChromaDB, BERTopic, RoBERTa |
+| **Fairness / XAI** | SHAP, Fairlearn, Grad-CAM, Fairness MetricFrame |
+| **Recommendation** | implicit (ALS), FAISS, BERT4Rec, LightFM |
+| **Computer Vision** | ONNX Runtime, OpenCV, ultralytics, ByteTrack |
+| **APIs & Serving** | FastAPI, Pydantic, uvicorn, Docker |
+| **Dashboards** | Streamlit, Plotly, pandas |
+| **MLOps** | Evidently AI (drift), ONNX export, Docker Compose |
+
+---
+
+## Quick Start
 
 ```bash
-cd "Portfolio Dashboard"
+# Clone
+git clone https://github.com/oluwafemiadeyemi/Portfolio
+cd Portfolio
+
+# Run any project dashboard
+cd "Loan Default Prediction"
 pip install -r requirements.txt
-streamlit run app.py --server.port 8600
-# Open: http://localhost:8600
+streamlit run dashboard/app.py --server.port 8522
+
+# Run any project API
+uvicorn src.api:app --port 8003 --reload
+# Swagger: http://localhost:8003/docs
 ```
 
----
-
-## Quick Start (Any Project)
-
+### Llama 3.2 Integration (P01, P06, P17)
 ```bash
-pip install -r requirements.txt
-uvicorn api.main:app --port <API_PORT>      # FastAPI
-streamlit run dashboard/app.py --server.port <DASH_PORT>  # Dashboard
-# Swagger: http://localhost:<API_PORT>/docs
-```
-
----
-
-## Llama 3.2 Integration (P01, P06, P17)
-
-```bash
-# Install: https://ollama.com
+# Install Ollama: https://ollama.com
 ollama pull llama3.2:3b
-# In .env:
+# Add to .env:
 PROVIDER=ollama
 OLLAMA_MODEL=llama3.2:4k
 ```
 
 ---
 
-## Tech Stack
-
-| Area | Technologies |
-|------|-------------|
-| ML/Tabular | XGBoost, LightGBM, CatBoost, scikit-learn, Optuna |
-| Deep Learning | PyTorch, EfficientNetV2, EfficientNet-B4, YOLOv8 |
-| NLP/GenAI | Llama 3.2, Ollama, ChromaDB, BERTopic, RoBERTa |
-| Explainability | SHAP, Grad-CAM, Fairlearn |
-| Recommendation | ALS (implicit), FAISS |
-| APIs | FastAPI, Pydantic |
-| Dashboards | Streamlit, Plotly |
-| MLOps | Evidently, Docker, ONNX Runtime |
-
----
-
 ## License
 
-MIT License — see [LICENSE](LICENSE) for details.
+MIT License — see [LICENSE](LICENSE) for full terms.
 
----
-
-**Oluwafemi Adeyemi** | MIT Applied AI & Data Science | [femi@phoxta.com](mailto:femi@phoxta.com)
-[![Streamlit](https://img.shields.io/badge/Streamlit-1.28-FF4B4B?logo=streamlit)](https://streamlit.io)
-[![XGBoost](https://img.shields.io/badge/XGBoost-2.0-orange)](https://xgboost.readthedocs.io)
-[![LightGBM](https://img.shields.io/badge/LightGBM-4.0-green)](https://lightgbm.readthedocs.io)
-[![YOLOv8](https://img.shields.io/badge/YOLOv8-Ultralytics-purple)](https://ultralytics.com)
-
----
-
-> **10 production-grade AI systems** trained on real-world datasets, each deployed as a REST API + interactive Streamlit dashboard — covering fraud detection, fair lending, computer vision, NLP, survival analysis, and causal inference.
-
----
-
-## Projects at a Glance
-
-| # | Project | Domain | Dataset | Key Model | API Port |
-|---|---------|--------|---------|-----------|----------|
-| 1 | [Fair Mortgage Decisioning](#1-fair-mortgage-decisioning-platform) | FinTech / RegTech | HMDA 2022 (1.38M applications) | LightGBM + Fairness Audit | :8001 |
-| 2 | [Real-Time Fraud Detection](#2-real-time-fraud-detection) | FinTech / Security | IEEE-CIS (590k transactions) | Stacked Ensemble (XGB+LGB+LR) | :8007 |
-| 3 | [People Analytics Platform](#3-people-analytics--attrition-prediction) | HR Tech | IBM HR (50k employees) | LightGBM + Network Analysis | :8002 |
-| 4 | [Digital Biomarker Platform](#4-digital-biomarker--parkinsons-detection) | HealthTech | UCI Telemonitoring (5.8k recordings) | XGBoost + Longitudinal Tracking | :8003 |
-| 5 | [Supply Chain Risk Intelligence](#5-supply-chain-risk-intelligence) | FinTech / SCM | Financial Distress (3.6k firms) | XGBoost + Altman Z-Score | :8004 |
-| 6 | [CLV & Retention Platform](#6-clv--retention-platform) | MarTech / E-Commerce | KKBox (2.6M users) | BG/NBD + Gamma-Gamma + Uplift | :8005 |
-| 7 | [Brand Intelligence Platform](#7-brand-intelligence-platform) | MarTech / NLP | Yelp 2022 (500k reviews) | VADER + TF-IDF + XGBoost | :8008 |
-| 8 | [Retail Object Detection](#8-retail-operations-intelligence) | Retail Tech / CV | Product Detection (452 images) | YOLOv8n Fine-tuned | :8010 |
-| 9 | [Workplace Ergonomics AI](#9-workplace-ergonomics--injury-prevention) | HealthTech / HR | REBA/RULA (rule-based) | MediaPipe + REBA/RULA Scoring | :8006 |
-| 10 | [PPE Safety Compliance](#10-ppe-safety-compliance-system) | SafetyTech / CV | Hard Hat Detection (4k images) | YOLOv8n PPE-Tuned | :8009 |
-
----
-
-## Architecture
-
-Each project follows a consistent, production-grade architecture:
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                     Data Layer                              │
-│  Raw Data → Feature Engineering → Train/Val/Test Split      │
-└─────────────────────┬───────────────────────────────────────┘
-                      │
-┌─────────────────────▼───────────────────────────────────────┐
-│                    Model Layer                              │
-│  XGBoost · LightGBM · YOLOv8 · BG/NBD · Cox PH · VADER    │
-│  SHAP Explainability · Fairness Metrics · Uncertainty Est.  │
-└──────────────┬────────────────────────┬──────────────────────┘
-               │                        │
-┌──────────────▼──────┐    ┌────────────▼────────────────────┐
-│   FastAPI REST API  │    │    Streamlit Dashboard          │
-│   /predict          │    │    Executive KPIs               │
-│   /explain          │    │    Interactive Charts           │
-│   /fairness_report  │    │    What-If Analysis             │
-│   /health           │    │    Model Performance            │
-└─────────────────────┘    └─────────────────────────────────┘
-```
-
----
-
-## 1. Fair Mortgage Decisioning Platform
-
-**Business Problem:** U.S. lenders process 14M+ mortgage applications annually. Disparate impact in automated decisioning exposes institutions to ECOA and Fair Housing Act violations.
-
-**Solution:** LightGBM underwriting model trained on 1.38 million HMDA 2022 Texas mortgage applications, with automated fairness auditing across race, sex, and age groups.
-
-**Key Results:**
-- Fairness-aware model with demographic parity monitoring across 6 protected attributes
-- Automated redlining detection by census tract
-- Geographic risk heatmap for CRA compliance
-- Explainable decisions via SHAP for every application
-
-**Tech Stack:** LightGBM · SHAP · Pandas · FastAPI · Streamlit · HMDA 2022
-
-**Dataset:** [HMDA 2022 — CFPB](https://ffiec.cfpb.gov/data-browser/) · 1.38M Texas mortgage applications
-
-```
-Loan Approval Prediction/
-├── src/
-│   ├── data_loader.py      # HMDA ingestion & synthetic fallback
-│   ├── features.py         # 36 engineered features
-│   ├── models.py           # LightGBM + LogisticRegression
-│   ├── fairness.py         # ECOA / FHA disparate impact analysis
-│   └── explainability.py   # SHAP waterfall + counterfactuals
-├── api/main.py             # FastAPI :8001
-└── dashboard/app.py        # Streamlit :8501
-```
-
----
-
-## 2. Real-Time Fraud Detection
-
-**Business Problem:** Global card fraud losses exceed $33B annually. Real-time detection must balance precision (false alarms frustrate customers) with recall (missed fraud = direct loss).
-
-**Solution:** Stacked ensemble (XGBoost + LightGBM meta-learner) trained on 590,540 real IEEE-CIS Vesta transactions. Optimal threshold tuned for business cost trade-off. Velocity features detect card-present fraud bursts.
-
-**Key Results:**
-- Validation AUC-ROC: **0.947** on 118k held-out transactions
-- Velocity features: transaction count / amount deviation over 1h, 6h, 24h windows
-- SHAP explainability for every flagged transaction
-- Fairness monitoring to prevent demographic over-flagging
-
-**Tech Stack:** XGBoost 2.0 · LightGBM · SHAP · Isolation Forest · FastAPI · Streamlit
-
-**Dataset:** [IEEE-CIS Fraud Detection](https://www.kaggle.com/competitions/ieee-fraud-detection) · 590k real transactions
-
-```
-Credit Card Default Prediction/
-├── src/
-│   ├── data_loader.py      # IEEE-CIS + synthetic fallback
-│   ├── features.py         # Velocity, email risk, amount features
-│   ├── models.py           # XGBoost + LightGBM stacked ensemble
-│   ├── explainability.py   # SHAP force plots per transaction
-│   └── fairness.py         # Demographic parity monitoring
-├── api/main.py             # FastAPI :8007
-└── dashboard/app.py        # Streamlit :8507
-```
-
----
-
-## 3. People Analytics & Attrition Prediction
-
-**Business Problem:** Voluntary attrition costs organizations 50–200% of an employee's annual salary. HR teams need to identify flight risks before they resign — and do so without introducing age, gender, or race bias.
-
-**Solution:** LightGBM attrition classifier trained on 50k synthetic employees (IBM HR distributions). Includes org-network analysis (centrality as retention risk signal), DEI auditing, and Employee Lifetime Value (ELV) scoring.
-
-**Key Results:**
-- 58 engineered features including tenure cohorts, promotion velocity, manager ratio
-- Network centrality (isolation = attrition risk)
-- ELV model: projects 5-year contribution per employee
-- DEI fairness audit across Gender, Age Group, Marital Status
-
-**Tech Stack:** LightGBM · NetworkX · SHAP · scikit-learn · FastAPI · Streamlit
-
-**Dataset:** [IBM HR Analytics](https://www.kaggle.com/datasets/pavansubhasht/ibm-hr-analytics-attrition-dataset) · Extended to 50k via bootstrapping
-
----
-
-## 4. Digital Biomarker & Parkinson's Detection
-
-**Business Problem:** Parkinson's disease affects 10M people globally. Traditional diagnosis requires in-clinic specialist visits. Voice biomarkers can enable remote, low-cost screening.
-
-**Solution:** XGBoost classifier and regression model trained on 5,875 telemonitoring recordings from 42 subjects. Subject-level cross-validation (GroupKFold) prevents data leakage across the same patient's recordings.
-
-**Key Results:**
-- Classification: Healthy Control vs. Parkinson's Disease
-- Regression: Unified Parkinson's Disease Rating Scale (UPDRS) score prediction
-- Longitudinal tracking: progression curves per patient over time
-- Population comparison against reference distributions
-
-**Tech Stack:** XGBoost · GroupKFold · SHAP · SciPy · FastAPI · Streamlit
-
-**Dataset:** [UCI Parkinson's Telemonitoring](https://archive.ics.uci.edu/ml/datasets/Parkinsons+Telemonitoring) · 5,875 recordings, 42 subjects
-
----
-
-## 5. Supply Chain Risk Intelligence
-
-**Business Problem:** Corporate bankruptcies cascade through supply chains. Vendors, lenders, and procurement teams need early warning of financial distress before public credit events.
-
-**Solution:** XGBoost classifier incorporating Altman Z-Score (5-factor), 116 financial ratio features, and NetworkX supply chain graph analysis. Systemic risk scoring flags interconnected firm clusters.
-
-**Key Results:**
-- Altman Z-Score zones: Safe / Grey / Distress
-- Supply chain network: 6,819 nodes, 20,457 edges
-- Sector-level risk aggregation
-- Early warning lead time: 1–3 quarters before default
-
-**Tech Stack:** XGBoost · LightGBM · NetworkX · Altman Z-Score · FastAPI · Streamlit
-
-**Dataset:** [Financial Distress Prediction](https://www.kaggle.com/datasets/shebrahimi/financial-distress) · 3,672 firms
-
----
-
-## 6. CLV & Retention Platform
-
-**Business Problem:** Streaming services spend heavily on user acquisition. Retaining high-value subscribers costs 5x less than acquiring new ones, but requires knowing who to target and with what offer.
-
-**Solution:** Full retention intelligence stack: BG/NBD + Gamma-Gamma CLV modeling, Cox Proportional Hazards survival analysis, two-model causal uplift (identifies "Persuadables" — users who respond to offers but would churn without them), and personalized retention messaging.
-
-**Key Results:**
-- CLV segmentation: Platinum / Gold / Silver / At-Risk
-- Kaplan-Meier survival curves by user cohort
-- Uplift segments: Persuadables / Sure Things / Lost Causes / Sleeping Dogs
-- Campaign ROI modeling: expected retention revenue vs. contact cost
-
-**Tech Stack:** BG/NBD · Gamma-Gamma · Cox PH · Two-Model Uplift · LightGBM · FastAPI · Streamlit
-
-**Dataset:** [KKBox Churn Challenge](https://www.kaggle.com/competitions/kkbox-churn-prediction-challenge) · 2.6M users
-
----
-
-## 7. Brand Intelligence Platform
-
-**Business Problem:** Brands receive millions of customer reviews across platforms. Manual sentiment analysis can't scale. NLP must surface product-level insights, competitive intelligence, and emerging complaint patterns.
-
-**Solution:** Full NLP pipeline: VADER sentiment, aspect-level sentiment (food / service / atmosphere / price), TF-IDF topic extraction with LSA dimensionality reduction, and XGBoost review classifier. Competitive benchmarking against peer businesses.
-
-**Tech Stack:** VADER · TF-IDF + TruncatedSVD · XGBoost · LightGBM · NLTK · FastAPI · Streamlit
-
-**Dataset:** [Yelp Open Dataset 2022](https://business.yelp.com/data/resources/open-dataset/) · 500k reviews sampled from 6.9M
-
----
-
-## 8. Retail Operations Intelligence
-
-**Business Problem:** Retail chains lose 1–3% of revenue to on-shelf voids (out-of-stock items). Manual shelf audits are expensive and infrequent. Computer vision can provide continuous, automated shelf monitoring.
-
-**Solution:** YOLOv8n fine-tuned on 452 product images across 19 SKU categories. Real-time shelf analytics: planogram compliance scoring, void detection, product count, and restock alerts.
-
-**Tech Stack:** YOLOv8 · Ultralytics · OpenCV · FastAPI · Streamlit
-
-**Dataset:** Kaggle product detection datasets (452 training images, 19 classes)
-
----
-
-## 9. Workplace Ergonomics & Injury Prevention
-
-**Business Problem:** Musculoskeletal disorders (MSDs) cost U.S. employers $20B annually in workers' compensation. Real-time ergonomic risk scoring during shifts can prevent injuries before they occur.
-
-**Solution:** MediaPipe Pose landmark extraction feeding into fully hardcoded REBA (Rapid Entire Body Assessment) and RULA (Rapid Upper Limb Assessment) scoring tables — no ML training required. Deterministic, clinically validated ergonomic risk scoring.
-
-**Key Results:**
-- Real-time REBA score: 1 (negligible) to 15 (very high risk)
-- Real-time RULA score: 1 (acceptable) to 7+ (investigate immediately)
-- Per-zone risk mapping and shift exposure tracking
-
-**Tech Stack:** MediaPipe · YOLOv8-Pose · REBA/RULA tables · OpenCV · FastAPI · Streamlit
-
----
-
-## 10. PPE Safety Compliance System
-
-**Business Problem:** Construction sites and factories have mandatory PPE (hard hat, hi-vis vest) requirements. Manual enforcement is inconsistent. Computer vision compliance monitoring can reduce violations by 40–60%.
-
-**Solution:** YOLOv8n fine-tuned on 4,000 hard hat detection images (3 classes: head, helmet, person). Real-time compliance scoring, violation alerts, zone-level risk mapping, and shift compliance reports.
-
-**Tech Stack:** YOLOv8 · Ultralytics · OpenCV · FastAPI · Streamlit
-
-**Dataset:** [Hard Hat Detection — Kaggle](https://www.kaggle.com/datasets/andrewmvd/hard-hat-detection) · 4,000 images
-
----
-
-## Running the Portfolio Locally
-
-### Prerequisites
-```bash
-# Python 3.11 required
-py -3.11 -m pip install -r requirements.txt
-```
-
-### Start all APIs and Dashboards
-
-| # | Project Folder | API Command | Dashboard Command |
-|---|---|---|---|
-| 1 | `Fair Mortgage Decisioning Platform/` | `uvicorn api.main:app --port 8001` | `streamlit run dashboard/app.py --server.port 8501` |
-| 2 | `Real-Time Fraud Detection/` | `uvicorn api.main:app --port 8007` | `streamlit run dashboard/app.py --server.port 8507` |
-| 3 | `People Analytics Platform/` | `uvicorn api.main:app --port 8002` | `streamlit run dashboard/app.py --server.port 8502` |
-| 4 | `Parkinsons Biomarker Detection/` | `uvicorn api.main:app --port 8003` | `streamlit run dashboard/app.py --server.port 8503` |
-| 5 | `Supply Chain Risk Intelligence/` | `uvicorn api.main:app --port 8004` | `streamlit run dashboard/app.py --server.port 8504` |
-| 6 | `CLV Retention Platform/` | `uvicorn api.main:app --port 8005` | `streamlit run dashboard/app.py --server.port 8505` |
-| 7 | `Brand Intelligence Platform/` | `uvicorn api.main:app --port 8008` | `streamlit run dashboard/app.py --server.port 8508` |
-| 8 | `Retail Operations Intelligence/` | `uvicorn api.main:app --port 8010` | `streamlit run dashboard/app.py --server.port 8510` |
-| 9 | `Workplace Ergonomics AI/` | `uvicorn api.main:app --port 8006` | `streamlit run dashboard/app.py --server.port 8506` |
-| 10 | `PPE Safety Compliance/` | `uvicorn api.main:app --port 8009` | `streamlit run dashboard/app.py --server.port 8509` |
-
-Prefix each command with `py -3.11 -m` and run from inside the project folder.
-
-### Data
-All projects include synthetic data fallbacks — they run out-of-the-box without downloading any datasets. See [DATASET_DOWNLOAD_GUIDE.md](DATASET_DOWNLOAD_GUIDE.md) for real data sources.
-
----
-
-## Skills Demonstrated
-
-| Category | Technologies |
-|---|---|
-| **ML Frameworks** | XGBoost 2.0 · LightGBM 4.0 · scikit-learn · lifelines |
-| **Deep Learning / CV** | YOLOv8 (Ultralytics) · MediaPipe · PyTorch |
-| **NLP** | VADER · TF-IDF · TruncatedSVD · NLTK |
-| **Survival / CLV** | BG/NBD · Gamma-Gamma · Cox PH · Kaplan-Meier |
-| **Causal Inference** | Two-Model Uplift · Qini Coefficient |
-| **Explainability** | SHAP (TreeExplainer, Waterfall, Summary) |
-| **Fairness / Ethics** | Demographic Parity · Disparate Impact · ECOA / FHA |
-| **APIs** | FastAPI · Pydantic v2 · uvicorn · async endpoints |
-| **Dashboards** | Streamlit · Plotly · multi-page apps |
-| **Data Engineering** | Pandas · NumPy · Velocity features · Group CV |
-
----
-
-## Contact
-
-**Oluwafemi Adeyemi**
-MIT Applied AI and Data Science
-📧 femi@phoxta.com
-🔗 [github.com/oluwafemiadeyemi](https://github.com/oluwafemiadeyemi)
+*All projects by Oluwafemi Adeyemi — MIT Applied AI & Data Science Program*

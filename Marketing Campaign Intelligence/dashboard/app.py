@@ -43,7 +43,15 @@ SEGMENT_COLORS = {
 def load_rfm():
     p = DATA_PROC / "rfm_scored.parquet"
     if p.exists():
-        return pd.read_parquet(p)
+        df = pd.read_parquet(p)
+        # Normalise column names from real training pipeline
+        if "recency" in df.columns and "recency_days" not in df.columns:
+            df = df.rename(columns={"recency": "recency_days"})
+        if "clv_estimate" not in df.columns:
+            df["clv_estimate"] = (
+                df["monetary"] * df["frequency"] * 12 / np.log1p(df["recency_days"].clip(lower=1))
+            ).round(2)
+        return df
     return _generate_demo_rfm()
 
 

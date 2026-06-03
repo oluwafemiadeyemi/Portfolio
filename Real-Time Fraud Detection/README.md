@@ -1,4 +1,5 @@
 # 🔍 Real-Time Fraud Detection
+[![Full Report](https://img.shields.io/badge/Full%20Report-docs%2Freports-informational?style=flat-square)](docs/reports/PROJECT_REPORT.md)
 
 > Score 590k financial transactions at < 50ms latency with AUC 0.974, live model-drift monitoring, and SHAP explanations that satisfy Basel III audit requirements.
 
@@ -57,16 +58,61 @@ An **XGBoost / LightGBM stacked ensemble** is trained on the IEEE-CIS 2019 datas
 | False Positive Rate | **< 1.2%** at production threshold |
 | Features Engineered | **433** transaction + identity features |
 
-## Screenshots
 
-![ROC Curve & AUC](docs/screenshots/01_roc_curve.png)
-*ROC curve comparison: XGBoost vs. LightGBM vs. stacked ensemble — AUC 0.974 on held-out test set*
+
+
+
+## Screen Recording
+
+> **[Watch Dashboard Demo](https://github.com/oluwafemiadeyemi/Portfolio/blob/main/Real-Time%20Fraud%20Detection/docs/recordings/P02_dashboard.mp4)** (3590 KB)
+
+The recording demonstrates full dashboard navigation — all tabs, interactive controls, charts, and live model inference.
+
+## Dashboard Screenshots
+
+### Live Dashboard
+
+![Overview](docs/screenshots/00_overview.png)
+*Overview*
+
+![Overview](docs/screenshots/01_overview.png)
+*Overview*
+
+![Roc Curve](docs/screenshots/01_roc_curve.png)
+*Roc Curve*
 
 ![Confusion Matrix](docs/screenshots/02_confusion_matrix.png)
-*Confusion matrix at production threshold showing 91% recall with < 1.2% false positive rate*
+*Confusion Matrix*
 
-![SHAP Feature Importance](docs/screenshots/03_feature_importance.png)
-*SHAP beeswarm plot showing top 20 features driving fraud scores across the test population*
+![Transaction Analysis](docs/screenshots/02_transaction_analysis.png)
+*Transaction Analysis*
+
+![Feature Importance](docs/screenshots/03_feature_importance.png)
+*Feature Importance*
+
+
+## Dashboard Screenshots
+
+### Live Dashboard
+
+![Overview](docs/screenshots/00_overview.png)
+*Overview*
+
+![Overview](docs/screenshots/01_overview.png)
+*Overview*
+
+![Roc Curve](docs/screenshots/01_roc_curve.png)
+*Roc Curve*
+
+![Confusion Matrix](docs/screenshots/02_confusion_matrix.png)
+*Confusion Matrix*
+
+![Transaction Analysis](docs/screenshots/02_transaction_analysis.png)
+*Transaction Analysis*
+
+![Feature Importance](docs/screenshots/03_feature_importance.png)
+*Feature Importance*
+
 
 ## Project Structure
 

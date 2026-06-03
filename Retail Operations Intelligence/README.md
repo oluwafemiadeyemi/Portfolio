@@ -1,4 +1,5 @@
 # 🏪 Retail Operations Intelligence
+[![Full Report](https://img.shields.io/badge/Full%20Report-docs%2Freports-informational?style=flat-square)](docs/reports/PROJECT_REPORT.md)
 
 > Detect shelf voids in real time with YOLOv8 computer vision — 72% mAP50, 34% out-of-stock reduction, $180k annual savings per store — the loss-prevention AI Walmart and Amazon are deploying at scale.
 
@@ -55,16 +56,51 @@ Retailers lose 4–8% of annual revenue to out-of-stock (OOS) events — Walmart
 | Inference Latency | **< 100ms** per frame (edge GPU) |
 | ONNX Export Size | **6.2 MB** (YOLOv8n) |
 
-## Screenshots
 
-![Model Performance Metrics](docs/screenshots/01_model_performance.png)
-*Precision-recall curve and mAP50 by detection class: full void vs. partial void vs. filled shelf*
 
-![Training Loss Curves](docs/screenshots/02_training_loss.png)
-*YOLOv8 training: box loss, classification loss, and DFL loss convergence over 100 epochs*
 
-![OOS Reduction Dashboard](docs/screenshots/03_oos_reduction.png)
-*Before/after out-of-stock event frequency: -34% reduction with model-guided restocking alerts*
+## Screen Recording
+
+> **[Watch Dashboard Demo](https://github.com/oluwafemiadeyemi/Portfolio/blob/main/Retail%20Operations%20Intelligence/docs/recordings/P07_dashboard.mp4)** (703 KB)
+
+The recording demonstrates full dashboard navigation — all tabs, interactive controls, charts, and live model inference.
+
+## Dashboard Screenshots
+
+### Live Dashboard
+
+![Overview](docs/screenshots/00_overview.png)
+*Overview*
+
+![Dashboard](docs/screenshots/01_dashboard.png)
+*Dashboard*
+
+![Model Performance](docs/screenshots/01_model_performance.png)
+*Model Performance*
+
+![Live Detection](docs/screenshots/02_live_detection.png)
+*Live Detection*
+
+![Training Loss](docs/screenshots/02_training_loss.png)
+*Training Loss*
+
+![Analytics](docs/screenshots/03_analytics.png)
+*Analytics*
+
+
+## Dashboard Screenshots
+
+### Live Dashboard
+
+![Model Performance](docs/screenshots/01_model_performance.png)
+*Model Performance*
+
+![Training Loss](docs/screenshots/02_training_loss.png)
+*Training Loss*
+
+![Oos Reduction](docs/screenshots/03_oos_reduction.png)
+*Oos Reduction*
+
 
 ## Project Structure
 
