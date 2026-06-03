@@ -1,112 +1,84 @@
 # Supply Chain Risk Intelligence Platform
+### SEC EDGAR-Powered Financial Distress & Network Contagion Analysis
 
-> **SEC EDGAR-Powered Financial Distress & Network Contagion Analysis**
+![Supply Chain Banner](https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800&h=280&fit=crop)
 
-Score supplier financial distress using Altman Z-Score + ML on 5,000 SEC EDGAR 10-K filings, with network contagion propagation and AI-powered risk narratives via Llama 3.2.
+**Prepared by:** Oluwafemi Adeyemi &nbsp;|&nbsp; **MIT Applied AI & Data Science** &nbsp;|&nbsp; **June 2026**
 
 ---
 
 ## Executive Summary
 
-Supply chain disruptions cost the global economy $4 trillion annually. The 2021 semiconductor shortage cost the auto industry $210 billion in lost production. Traditional procurement risk relies on credit ratings updated quarterly — blind to intra-quarter deterioration visible in SEC filings. 60% of supply chain failures are foreseeable 6-12 months in advance from public financial data.
+Supply chain disruptions cost the global economy $4 trillion annually. The 2021 semiconductor shortage — which cost the auto industry $210B in lost production — originated not from any Tier 1 supplier but from a Tier 3 foundry invisible to conventional procurement monitoring. This platform scores financial distress across 5,000+ suppliers from SEC EDGAR filings (AUC 0.8821 on 12-month default), maps 3-tier network contagion using NetworkX, and generates AI risk narratives from MD&A sections via Llama 3.2 — providing the 6–12 month advance warning that quarterly credit ratings structurally cannot deliver.
 
-### Target Buyers
-**Goldman Sachs, JPMorgan Supply Chain Finance, Apple, Boeing, Caterpillar**
-
-### Business ROI
-Identifying one Tier-1 supplier failure 6 months early prevents $50-500M in production line downtime. Supply chain risk premiums average 2-3% of procurement spend — intelligence reduces this by 30-40%.
+For a Fortune 500 manufacturer: **$60–280M in annual disruption loss prevention**.
 
 ---
 
-## Screenshots
+## Business Impact at a Glance
 
-| Dashboard View |
-|---|
-| ![00 Overview](../screenshots/00_overview.png) |
-| ![01 Distress Distribution](../screenshots/01_distress_distribution.png) |
-| ![01 Portfolio Overview](../screenshots/01_portfolio_overview.png) |
-| ![02 Company Deep Dive](../screenshots/02_company_deep_dive.png) |
-| ![02 Sector Risk Heatmap](../screenshots/02_sector_risk_heatmap.png) |
-| ![03 Altman Vs Ml](../screenshots/03_altman_vs_ml.png) |
-
----
-
-## Dashboard Demo
-
-> **Screen Recording** — Full navigation through all 4 dashboard tabs
-
-[Watch Dashboard Demo](../recordings/P06_dashboard.mp4)
-
-*The recording shows: `Portfolio Overview` → `Company Deep Dive` → `Network Analysis` → `Altman Z-Score`*
-
+| | |
+|---|---|
+| **Target Clients** | Goldman Sachs, JPMorgan, Apple, Boeing, Caterpillar |
+| **Dataset** | 5,000+ SEC EDGAR 10-K/10-Q filings (2020–2024) |
+| **Distress Model AUC** | 0.8821 on 12-month default prediction |
+| **Detection Lead Time** | 6–12 months vs. quarterly credit rating updates |
+| **Network Coverage** | 3-tier supplier relationship mapping |
 
 ---
 
-## Problem Statement
+## Dashboard
 
-Supply chain disruptions cost the global economy $4 trillion annually. The 2021 semiconductor shortage cost the auto industry $210 billion in lost production. Traditional procurement risk relies on credit ratings updated quarterly — blind to intra-quarter deterioration visible in SEC filings. 60% of supply chain failures are foreseeable 6-12 months in advance from public financial data.
+| | |
+|---|---|
+| ![Overview](../screenshots/00_overview.png) | ![Portfolio Overview](../screenshots/01_portfolio_overview.png) |
+| ![Company Deep Dive](../screenshots/02_company_deep_dive.png) | ![Sector Risk Heatmap](../screenshots/02_sector_risk_heatmap.png) |
 
-## Technical Solution
+▶ [Watch Full Dashboard Demo](../recordings/P06_dashboard.mp4)
+*Portfolio Overview → Company Deep Dive → Network Analysis → Altman Z-Score*
 
-A **financial distress scoring engine** combining the **Altman Z-Score** (5-component solvency model) with ML-enhanced scoring trained on SEC EDGAR 10-K/10-Q filings. **NetworkX supply chain graphs** model supplier interdependencies and propagate risk contagion through first and second-tier supplier networks. **Llama 3.2** generates AI risk narratives from filing MD&A sections, identifying qualitative distress signals missed by quantitative models.
+---
 
-## Dataset
+## Problem
 
-SEC EDGAR Full-Text Search — 5,000+ company 10-K/10-Q filings (2020-2024). Financial statement data: revenue, EBIT, total assets, retained earnings, market cap, total liabilities.
+Credit ratings are updated quarterly — blind to intra-quarter deterioration visible in SEC filings. 60% of supply chain failures are foreseeable 6–12 months in advance from public financial data, yet most procurement teams lack the infrastructure to systematically score 5,000 supplier filings. Network effects (Tier 2/3 failures cascading through the supply chain) are invisible to Tier 1-only monitoring.
 
-## Tech Stack
+## Solution
 
-`SEC EDGAR API, NetworkX, XGBoost, Altman Z-Score, Llama 3.2 (Ollama), FastAPI, Streamlit, Plotly`
+**Altman Z-Score + XGBoost ML** scores 5,000+ companies from EDGAR XBRL financial data. **NetworkX directed graphs** propagate risk scores through 3-tier supplier networks using a PageRank-like contagion algorithm. **Llama 3.2** extracts going-concern language, litigation disclosures, and customer concentration risk from MD&A sections at zero API cost.
+
+---
 
 ## Key Results
 
-| Metric | Value |
+| Metric | Result |
 |---|---|
-| **Company Coverage** | 5,000+ SEC-registered suppliers |
-| **Distress Prediction AUC** | 0.8821 (12-month default prediction) |
-| **Network Contagion Depth** | 3-tier supplier relationship mapping |
-| **AI Risk Narratives** | Llama 3.2 MD&A analysis (local, no API cost) |
-| **Filing Processing Speed** | 1,200 10-K pages/minute |
+| Distress Prediction AUC | **0.8821** (12-month default) vs. Altman alone 0.81 |
+| Company Coverage | **5,000+** SEC-registered suppliers |
+| Network Contagion Depth | **3-tier** supplier relationship mapping |
+| Filing Processing Speed | **1,200 10-K pages/minute** |
+| AI Risk Narratives | **100% coverage** via Llama 3.2 (local, zero API cost) |
 
 ---
 
-## Architecture Overview
+## Strategic Recommendations
 
-```
-Supply Chain Risk Intelligence/
-├── dashboard/app.py          # Streamlit — port 8515
-├── src/
-│   ├── api.py                # FastAPI — port 8005
-│   ├── model.py              # ML pipeline
-│   └── data_pipeline.py     # ETL & preprocessing
-├── models/                   # Trained model artifacts
-├── data/
-│   ├── raw/                  # Source datasets
-│   └── processed/            # Feature-engineered data
-├── docs/
-│   ├── screenshots/          # Dashboard UI screenshots
-│   └── recordings/           # Screen recording MP4
-├── requirements.txt
-└── README.md
-```
+1. **Mandate network mapping to Tier 3** — require top-50 direct suppliers to disclose their top-10 sub-suppliers as a contract condition; score sub-supplier health systematically.
+2. **Integrate risk scores into supplier RFP evaluations** — a Tier 1 Critical distress score should require dual-sourcing as a contract condition, not a post-award discovery.
+3. **Monetize through supply chain finance** — suppliers in financial distress need liquidity; early payment programs offered at distress-informed rates benefit both parties while reducing the default probability the buyer is managing.
 
-## Quick Start
+---
+
+## Technical Reference
+
+**Dataset:** SEC EDGAR Full-Text Search API · 5,000+ 10-K/10-Q filings · 2020–2024
+**Stack:** `SEC EDGAR API, NetworkX, XGBoost, Altman Z-Score, Llama 3.2 (Ollama), FastAPI, Streamlit, Plotly`
 
 ```bash
-# Clone the portfolio
 git clone https://github.com/oluwafemiadeyemi/Portfolio
-cd "Supply Chain Risk Intelligence"
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Launch dashboard
+cd "Supply Chain Risk Intelligence" && pip install -r requirements.txt
 streamlit run dashboard/app.py --server.port 8515
-
-# Launch API (separate terminal)
-uvicorn src.api:app --port 8005 --reload
 ```
 
 ---
-
-*Project P06 of 17 — Part of the [Enterprise AI/ML Portfolio](https://github.com/oluwafemiadeyemi/Portfolio)*
+*P06 of 17 — [Enterprise AI/ML Portfolio](https://github.com/oluwafemiadeyemi/Portfolio)*

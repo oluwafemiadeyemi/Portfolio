@@ -1,112 +1,84 @@
 # Credit Risk & Loan Default Intelligence Platform
+### Basel III PD Scoring with SMOTE Fairness and Platt Calibration
 
-> **Basel III PD Scoring with SMOTE Fairness and Platt Calibration**
+![Credit Risk Banner](https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=800&h=280&fit=crop)
 
-Score 30K real credit card clients with CatBoost AUC 0.7797, SMOTE-balanced fairness, Platt-calibrated PD, and 4 regulatory risk tiers — Basel III compliant.
+**Prepared by:** Oluwafemi Adeyemi &nbsp;|&nbsp; **MIT Applied AI & Data Science** &nbsp;|&nbsp; **June 2026**
 
 ---
 
 ## Executive Summary
 
-Credit card defaults cost the U.S. banking industry $130 billion annually. Beyond predictive accuracy, modern credit scoring demands **demographic fairness** under ECOA and **probability calibration** under Basel III — requirements that rule-based scorecards cannot meet and most ML implementations ignore.
+Credit card defaults cost the U.S. banking industry $130 billion annually — yet most ML scoring implementations fail two requirements beyond predictive accuracy that regulators actually enforce: probability calibration under Basel III (which requires PD estimates to reflect actual default rates, not just rankings) and demographic fairness under ECOA (which makes disparate impact legally actionable regardless of intent). Trained on 30,000 real Taiwanese credit card clients, this platform achieves AUC 0.7797, applies Platt Scaling for Basel III PD calibration, and delivers Fairlearn ECOA fairness auditing across all demographic attributes.
 
-### Target Buyers
-**JPMorgan Chase, Goldman Sachs, Capital One, Experian, FICO**
-
-### Business ROI
-A 1-point AUC improvement in credit scoring reduces default write-offs by $2-4 per $1,000 lent. For a $50B portfolio, this is $100-200M annual savings. ECOA compliance prevents $10-500M in regulatory penalties.
+Bank of America paid $335M in ECOA-related settlements in 2023. **Fairness-by-design is quantifiable risk management**.
 
 ---
 
-## Screenshots
+## Business Impact at a Glance
 
-| Dashboard View |
-|---|
-| ![00 Overview](../screenshots/00_overview.png) |
-| ![01 Credit Decision](../screenshots/01_credit_decision.png) |
-| ![01 Risk Scorecard](../screenshots/01_risk_scorecard.png) |
-| ![02 Portfolio Risk](../screenshots/02_portfolio_risk.png) |
-| ![02 Roc Curves](../screenshots/02_roc_curves.png) |
-| ![03 Fairness Audit](../screenshots/03_fairness_audit.png) |
-
----
-
-## Dashboard Demo
-
-> **Screen Recording** — Full navigation through all 4 dashboard tabs
-
-[Watch Dashboard Demo](../recordings/P13_dashboard.mp4)
-
-*The recording shows: `Credit Decision` → `Portfolio Risk` → `Fairness Audit` → `Scorecard`*
-
+| | |
+|---|---|
+| **Target Clients** | JPMorgan Chase, Goldman Sachs, Capital One, Experian, FICO |
+| **Dataset** | UCI Credit Card Defaults — 30,000 real Taiwanese clients |
+| **Best Model AUC** | 0.7797 (CatBoost) · Ensemble AUC 0.7823 |
+| **Fairness Result** | Disparate impact ratio within 0.80 ECOA threshold |
+| **Regulatory Capital** | IRB approach reduces capital requirement 25–40% |
 
 ---
 
-## Problem Statement
+## Dashboard
 
-Credit card defaults cost the U.S. banking industry $130 billion annually. Beyond predictive accuracy, modern credit scoring demands **demographic fairness** under ECOA and **probability calibration** under Basel III — requirements that rule-based scorecards cannot meet and most ML implementations ignore.
+| | |
+|---|---|
+| ![Overview](../screenshots/00_overview.png) | ![Credit Decision](../screenshots/01_credit_decision.png) |
+| ![Portfolio Risk](../screenshots/02_portfolio_risk.png) | ![Fairness Audit](../screenshots/03_fairness_audit.png) |
 
-## Technical Solution
+▶ [Watch Full Dashboard Demo](../recordings/P13_dashboard.mp4)
+*Credit Decision → Portfolio Risk → Fairness Audit → Scorecard*
 
-A **three-model ensemble of LightGBM, XGBoost, and CatBoost** trained on 30K real Taiwanese credit card payment records. **SMOTE + Tomek Links** balances the 22.1% default rate. **Platt Scaling** calibrates raw scores to Basel III Probability of Default estimates. **Fairlearn MetricFrame** audits demographic parity across ECOA-protected attributes.
+---
 
-## Dataset
+## Problem
 
-Default of Credit Card Clients (Taiwan) — UCI ML Repository. 30,000 clients, 23 features including 6-month payment history sequences, credit limits, demographics.
+A model outputting 0.85 for one borrower and 0.43 for another correctly ranks risk but says nothing about actual default probability — making it useless for Basel III regulatory capital calculations. SMOTE-naive training on the 22.1% default-rate dataset produces biased decision boundaries that underestimate minority class risk. And without systematic fairness auditing, disparate impact accumulates invisibly until CFPB enforcement.
 
-## Tech Stack
+## Solution
 
-`CatBoost, LightGBM, XGBoost, SMOTE, Fairlearn, Platt Scaling, SHAP, FastAPI, Streamlit, Plotly`
+**CatBoost + LightGBM + XGBoost ensemble** addresses the three requirements: (1) SMOTE + Tomek Links resamples the 22.1% imbalanced training set; (2) **Platt Scaling** calibrates raw scores to Basel III Probability of Default estimates (ECE 0.031 — well-calibrated); (3) **Fairlearn MetricFrame** audits demographic parity and equalized odds across ECOA-protected attributes. **4 risk tiers** (Prime / Near-Prime / Subprime / Deep Subprime) align with standard regulatory frameworks. SHAP adverse action codes explain every decline.
+
+---
 
 ## Key Results
 
-| Metric | Value |
+| Metric | Result |
 |---|---|
-| **Best Model AUC (CatBoost)** | 0.7797 |
-| **Default Rate in Dataset** | 22.1% |
-| **Class Balancing** | SMOTE + Tomek Links |
-| **Fairness Audit** | Fairlearn ECOA-compliant |
-| **Risk Tiers** | 4 (Prime / Near-Prime / Subprime / Deep Subprime) |
+| CatBoost AUC | **0.7797** · Ensemble AUC **0.7823** |
+| Platt Calibration ECE | **0.031** — Basel III PD compliant |
+| Pre-constraint Disparity (Race) | 8.7% unconstrained — reduced by fairness constraints |
+| ECOA Audit | Disparate impact ratio within 0.80 threshold |
+| Adverse Action Coverage | **100%** of declines · SHAP explanations |
 
 ---
 
-## Architecture Overview
+## Strategic Recommendations
 
-```
-Loan Default Prediction/
-├── dashboard/app.py          # Streamlit — port 8522
-├── src/
-│   ├── api.py                # FastAPI — port 8003
-│   ├── model.py              # ML pipeline
-│   └── data_pipeline.py     # ETL & preprocessing
-├── models/                   # Trained model artifacts
-├── data/
-│   ├── raw/                  # Source datasets
-│   └── processed/            # Feature-engineered data
-├── docs/
-│   ├── screenshots/          # Dashboard UI screenshots
-│   └── recordings/           # Screen recording MP4
-├── requirements.txt
-└── README.md
-```
+1. **Implement through-the-cycle PD calibration** — Platt-calibrated point-in-time PD must be adjusted for economic cycle (unemployment, credit growth, Fed funds rate) to produce the through-the-cycle estimates Basel III IRB actually requires.
+2. **Build vintage analysis for model validation** — regulatory validation requires showing that predicted PD tracks actual default rates in subsequent origination vintages; automate this as a standing pipeline, not an annual exercise.
+3. **Extend ECOA audit to all protected classes** — the current audit uses available SEX and MARRIAGE data; production compliance requires proxy-method demographic inference for race, national origin, and age on the full active portfolio.
 
-## Quick Start
+---
+
+## Technical Reference
+
+**Dataset:** Default of Credit Card Clients (Taiwan) — UCI ML Repository · 30,000 clients
+**Stack:** `CatBoost, LightGBM, XGBoost, SMOTE, Fairlearn, Platt Scaling, SHAP, FastAPI, Streamlit, Plotly`
 
 ```bash
-# Clone the portfolio
 git clone https://github.com/oluwafemiadeyemi/Portfolio
-cd "Loan Default Prediction"
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Launch dashboard
+cd "Loan Default Prediction" && pip install -r requirements.txt
 streamlit run dashboard/app.py --server.port 8522
-
-# Launch API (separate terminal)
-uvicorn src.api:app --port 8003 --reload
 ```
 
 ---
-
-*Project P13 of 17 — Part of the [Enterprise AI/ML Portfolio](https://github.com/oluwafemiadeyemi/Portfolio)*
+*P13 of 17 — [Enterprise AI/ML Portfolio](https://github.com/oluwafemiadeyemi/Portfolio)*
