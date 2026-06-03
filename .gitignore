@@ -117,3 +117,9 @@ capture_dashboards.py
 # ── Portfolio Dashboard temp ──────────────────────────────────────────────────
 Portfolio\ Dashboard/utils/__pycache__/
 Portfolio\ Dashboard/views/__pycache__/
+
+# ── Node.js / Next.js ─────────────────────────────────────────────────────────
+node_modules/
+portfolio-website/node_modules/
+portfolio-website/.next/
+.next/
