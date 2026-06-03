@@ -38,9 +38,13 @@ def load_model():
     if not p.exists():
         return None
     try:
-        import torchvision.transforms as T
-        from model import load_model as _load
-        return _load()
+        import json, timm
+        info = json.loads((MODELS_DIR / "model_info.json").read_text()) if (MODELS_DIR / "model_info.json").exists() else {}
+        arch = info.get("arch", "efficientnet_b4")
+        num_classes = info.get("num_classes", len(EMOTIONS))
+        model = timm.create_model(arch, pretrained=False, num_classes=num_classes)
+        model.load_state_dict(torch.load(p, map_location=DEVICE))
+        return model.to(DEVICE).eval()
     except Exception:
         return None
 
@@ -57,12 +61,16 @@ def _demo_probs(img: Image.Image) -> np.ndarray:
 
 
 def predict(model, img: Image.Image) -> dict:
-    import torchvision.transforms as T
+    import json, torchvision.transforms as T
     if model is None:
         probs = _demo_probs(img)
     else:
+        info = json.loads((MODELS_DIR / "model_info.json").read_text()) if (MODELS_DIR / "model_info.json").exists() else {}
+        img_size = info.get("img_size", 224)
         transform = T.Compose([
-            T.Resize((224, 224)), T.ToTensor(),
+            T.Resize((img_size, img_size)),
+            T.Grayscale(num_output_channels=3),
+            T.ToTensor(),
             T.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
         ])
         tensor = transform(img).unsqueeze(0).to(DEVICE)

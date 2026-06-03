@@ -1,40 +1,52 @@
-:root {
-  --bg: #0E1117;
-  --surface: #161B27;
-  --surface2: #1E2538;
-  --border: #2A3350;
-  --primary: #4F8EF7;
-  --success: #00C896;
-  --warning: #FFB020;
-  --danger: #FF5A65;
-  --purple: #9B7FEA;
-  --text: #F0F4FF;
-  --text-muted: #7A8BAD;
-  --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* ── Light theme tokens ─────────────────────────────────────── */
+  :root {
+    --background:           0 0% 100%;
+    --foreground:           222 47% 11%;
+    --card:                 0 0% 100%;
+    --card-foreground:      222 47% 11%;
+    --primary:              221 83% 53%;
+    --primary-foreground:   0 0% 100%;
+    --secondary:            210 40% 96%;
+    --secondary-foreground: 222 47% 20%;
+    --muted:                210 40% 96%;
+    --muted-foreground:     215 16% 47%;
+    --accent:               210 40% 92%;
+    --accent-foreground:    222 47% 11%;
+    --border:               214 32% 91%;
+    --input:                214 32% 91%;
+    --ring:                 221 83% 53%;
+    --radius:               0.5rem;
+  }
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
-html { scroll-behavior: smooth; }
-
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--font);
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
+@layer base {
+  * { @apply border-border box-border; }
+  html { scroll-behavior: smooth; }
+  body {
+    @apply bg-white text-slate-900 font-sans antialiased;
+    line-height: 1.6;
+  }
+  a { color: inherit; text-decoration: none; }
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { @apply bg-slate-100; }
+  ::-webkit-scrollbar-thumb { @apply bg-slate-300 rounded; }
 }
 
-a { color: inherit; text-decoration: none; }
+/* Gradient text for hero headings */
+.gradient-text {
+  background: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #6366f1 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
 
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(24px); }
+  from { opacity: 0; transform: translateY(16px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-
-@keyframes shimmer {
-  0%   { background-position: -200% center; }
-  100% { background-position: 200% center; }
-}
-
-.animate-fade-up { animation: fadeUp 0.6s ease forwards; }
+.animate-fade-up { animation: fadeUp 0.5s ease forwards; }

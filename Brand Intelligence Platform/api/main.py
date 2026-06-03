@@ -585,6 +585,66 @@ async def sentiment_forecast(horizon_days: int = 7):
 
 
 # ---------------------------------------------------------------------------
+# AI-Powered Endpoints (Llama via Ollama)
+# ---------------------------------------------------------------------------
+
+from src.llm_insights import analyze_review as _llm_analyze, generate_brand_narrative as _llm_narrative
+
+
+class LLMReviewRequest(BaseModel):
+    text: str = Field(..., min_length=10, example="The food was amazing but service was slow.")
+
+
+class LLMNarrativeRequest(BaseModel):
+    brand: Optional[str] = Field(default=None, example="Starbucks")
+    avg_sentiment: float = Field(..., example=0.32)
+    review_count: int = Field(..., example=1240)
+    top_topics: List[str] = Field(default_factory=list)
+    nps_proxy: Optional[float] = Field(default=None)
+
+
+@app.post(
+    "/ai/analyze_review",
+    tags=["AI Insights"],
+    summary="Deep aspect extraction via Llama (local, free)",
+)
+def ai_analyze_review(req: LLMReviewRequest):
+    """
+    Uses llama3.2:4k (running locally via Ollama) to extract structured
+    brand intelligence: aspects, competitive signals, action items, and an
+    executive summary — all from a single customer review.
+    """
+    result = _llm_analyze(req.text)
+    result["model_used"] = "llama3.2:4k (Ollama local)"
+    return result
+
+
+@app.post(
+    "/ai/brand_narrative",
+    tags=["AI Insights"],
+    summary="Executive brand health narrative via Llama",
+)
+def ai_brand_narrative(req: LLMNarrativeRequest):
+    """
+    Generates a 3-paragraph executive brand health briefing from aggregated
+    metrics using llama3.2:4k.
+    """
+    metrics = {
+        "Brand": req.brand or "target brand",
+        "Average Sentiment Score": req.avg_sentiment,
+        "Total Reviews Analysed": req.review_count,
+        "Top Discussion Topics": ", ".join(req.top_topics[:5]) or "n/a",
+        "NPS Proxy Score": req.nps_proxy or "n/a",
+    }
+    narrative = _llm_narrative(metrics)
+    return {
+        "brand":     req.brand,
+        "narrative": narrative,
+        "model_used": "llama3.2:4k (Ollama local)",
+    }
+
+
+# ---------------------------------------------------------------------------
 # Entry point
 # ---------------------------------------------------------------------------
 

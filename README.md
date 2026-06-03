@@ -1,8 +1,153 @@
-# Enterprise AI & Data Science Portfolio
-### Oluwafemi Adeyemi · MIT Applied AI and Data Science
+# Enterprise AI/ML Portfolio — Oluwafemi Adeyemi
 
-[![Python 3.11](https://img.shields.io/badge/Python-3.11-blue?logo=python)](https://python.org)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.104-009688?logo=fastapi)](https://fastapi.tiangolo.com)
+> 17 production-grade AI systems targeting Fortune 500 employers across healthcare, finance, retail, HR, and entertainment.
+
+[![MIT Applied AI](https://img.shields.io/badge/MIT-Applied%20AI%20%26%20Data%20Science-blue?style=flat-square)](https://professional.mit.edu)
+[![Python 3.11](https://img.shields.io/badge/Python-3.11-blue?style=flat-square&logo=python)](https://python.org)
+[![FastAPI](https://img.shields.io/badge/FastAPI-latest-009688?style=flat-square&logo=fastapi)](https://fastapi.tiangolo.com)
+[![Streamlit](https://img.shields.io/badge/Streamlit-1.30-FF4B4B?style=flat-square&logo=streamlit)](https://streamlit.io)
+[![Llama 3.2](https://img.shields.io/badge/Llama-3.2%20Local-7c3aed?style=flat-square)](https://ollama.com)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
+
+---
+
+## About
+
+**Oluwafemi Adeyemi** — Applied AI Engineer & Data Scientist
+- MIT Applied AI & Data Science Program
+- 📧 [femi@phoxta.com](mailto:femi@phoxta.com)
+- 💼 [LinkedIn](https://www.linkedin.com/in/oluwafemiadeyemi)
+- 🌐 [Portfolio Website](https://github.com/oluwafemiadeyemi/Portfolio)
+
+---
+
+## Portfolio Summary
+
+| Metric | Value |
+|--------|-------|
+| Total Projects | **17 production systems** |
+| Real Training Data | **24 GB+ (no synthetic shortcuts)** |
+| Trained Models | **60+ across ML, DL, GenAI, Vision** |
+| LLM Integration | **Llama 3.2 local (zero API cost)** |
+| Domains | **7 (NLP, Vision, Classification, Regression, RecSys, Finance, Health)** |
+| Deployment | **FastAPI + Streamlit + Docker + ONNX** |
+
+---
+
+## Projects
+
+### NLP & Generative AI
+
+| # | Project | Dataset | Key Result | Stack |
+|---|---------|---------|-----------|-------|
+| P01 | [Brand Intelligence Platform](Brand%20Intelligence%20Platform/) | Yelp 2022 · 8.8 GB | AUC 0.91 · 6.9M reviews · Crisis alert 18-36hr | RoBERTa, BERTopic, Llama 3.2, VADER |
+| P17 | [Customer Review Categorisation](Customer%20Review%20Categorisation/) | 500k reviews | RAG Precision 91% · 8 categories · ChromaDB | Llama 3.2, ChromaDB, BERTopic |
+
+### ML Classification
+
+| # | Project | Dataset | Key Result | Stack |
+|---|---------|---------|-----------|-------|
+| P02 | [Real-Time Fraud Detection](Real-Time%20Fraud%20Detection/) | IEEE-CIS · 1.6 GB | AUC 0.974 · Recall 91% · <50ms | XGBoost, LightGBM, SHAP, Evidently |
+| P03 | [Fair Mortgage Decisioning Platform](Fair%20Mortgage%20Decisioning%20Platform/) | HMDA 2022 · 500 MB | AUC 0.91 · 14M+ apps · Fairlearn | LightGBM, Fairlearn, SHAP |
+| P04 | [People Analytics Platform](People%20Analytics%20Platform/) | IBM HR Extended | AUC 0.89 · −23% attrition · $4.2M saved | XGBoost, NetworkX, Fairlearn |
+| P05 | [Parkinsons Biomarker Detection](Parkinsons%20Biomarker%20Detection/) | mPower · 9.5k participants | AUC 0.97 · Sensitivity 92% | GBM, Random Forest, MC Dropout |
+| P11 | [Marketing Campaign Intelligence](Marketing%20Campaign%20Intelligence/) | UCI Bank Marketing · 41k | AUC 0.82 · 6 RFM segments | LightGBM, HDBSCAN, FP-Growth |
+| P13 | [Loan Default Prediction](Loan%20Default%20Prediction/) | UCI Credit Card · 30k | AUC 0.78 · SMOTE · Fairlearn | LightGBM, CatBoost, XGBoost |
+
+### ML Regression
+
+| # | Project | Dataset | Key Result | Stack |
+|---|---------|---------|-----------|-------|
+| P12 | [Automotive Pricing Intelligence](Automotive%20Pricing%20Intelligence/) | Craigslist · 367k listings | MAE $2,753 · R² 0.87 | LightGBM, XGBoost, CatBoost, Optuna |
+
+### Finance & Risk
+
+| # | Project | Dataset | Key Result | Stack |
+|---|---------|---------|-----------|-------|
+| P06 | [Supply Chain Risk Intelligence](Supply%20Chain%20Risk%20Intelligence/) | SEC EDGAR | AUC 0.88 · 12-month EW · Llama narratives | XGBoost, NetworkX, Altman Z-Score, Llama 3.2 |
+
+### Customer Analytics
+
+| # | Project | Dataset | Key Result | Stack |
+|---|---------|---------|-----------|-------|
+| P09 | [CLV Retention Platform](CLV%20Retention%20Platform/) | KKBox · 2.1 GB | Churn AUC 0.86 · −23% churn · $1.8M/qtr | BG/NBD, XGBoost, Uplift Modelling |
+
+### Recommendation Systems
+
+| # | Project | Dataset | Key Result | Stack |
+|---|---------|---------|-----------|-------|
+| P16 | [Music Recommendation System](Music%20Recommendation%20System/) | Spotify/Last.fm · 9.7M events | 962k users · 128-factor ALS · FAISS | ALS, FAISS, Implicit |
+
+### Computer Vision
+
+| # | Project | Dataset | Key Result | Stack |
+|---|---------|---------|-----------|-------|
+| P07 | [Retail Operations Intelligence](Retail%20Operations%20Intelligence/) | 506 real shelf images | mAP50 0.72 · −34% OOS · $180k/yr | YOLOv8, ByteTrack, ONNX |
+| P08 | [Workplace Ergonomics AI](Workplace%20Ergonomics%20AI/) | COCO Pose pre-trained | ISO 9241 · −43% MSD claims · $380k/yr | YOLOv8-Pose, REBA/RULA, ONNX |
+| P10 | [PPE Safety Compliance](PPE%20Safety%20Compliance/) | 4k real construction images | Precision 0.95 · mAP50 0.64 · OSHA | YOLOv8, OSHA Scoring, ONNX |
+| P14 | [Malaria Detection](Malaria%20Detection/) | NIH · 27.5k cells | AUC 0.97 · Sensitivity 94% · Grad-CAM | EfficientNetV2, ViT, MC Dropout |
+| P15 | [Facial Emotion Detection](Facial%20Emotion%20Detection/) | FER2013 + AffectNet · 450k | 7 classes · <30ms · ONNX | EfficientNet-B4, Attention, ONNX |
+
+---
+
+## Unified Dashboard
+
+View all 17 projects from one Streamlit app:
+
+```bash
+cd "Portfolio Dashboard"
+pip install -r requirements.txt
+streamlit run app.py --server.port 8600
+# Open: http://localhost:8600
+```
+
+---
+
+## Quick Start (Any Project)
+
+```bash
+pip install -r requirements.txt
+uvicorn api.main:app --port <API_PORT>      # FastAPI
+streamlit run dashboard/app.py --server.port <DASH_PORT>  # Dashboard
+# Swagger: http://localhost:<API_PORT>/docs
+```
+
+---
+
+## Llama 3.2 Integration (P01, P06, P17)
+
+```bash
+# Install: https://ollama.com
+ollama pull llama3.2:3b
+# In .env:
+PROVIDER=ollama
+OLLAMA_MODEL=llama3.2:4k
+```
+
+---
+
+## Tech Stack
+
+| Area | Technologies |
+|------|-------------|
+| ML/Tabular | XGBoost, LightGBM, CatBoost, scikit-learn, Optuna |
+| Deep Learning | PyTorch, EfficientNetV2, EfficientNet-B4, YOLOv8 |
+| NLP/GenAI | Llama 3.2, Ollama, ChromaDB, BERTopic, RoBERTa |
+| Explainability | SHAP, Grad-CAM, Fairlearn |
+| Recommendation | ALS (implicit), FAISS |
+| APIs | FastAPI, Pydantic |
+| Dashboards | Streamlit, Plotly |
+| MLOps | Evidently, Docker, ONNX Runtime |
+
+---
+
+## License
+
+MIT License — see [LICENSE](LICENSE) for details.
+
+---
+
+**Oluwafemi Adeyemi** | MIT Applied AI & Data Science | [femi@phoxta.com](mailto:femi@phoxta.com)
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.28-FF4B4B?logo=streamlit)](https://streamlit.io)
 [![XGBoost](https://img.shields.io/badge/XGBoost-2.0-orange)](https://xgboost.readthedocs.io)
 [![LightGBM](https://img.shields.io/badge/LightGBM-4.0-green)](https://lightgbm.readthedocs.io)

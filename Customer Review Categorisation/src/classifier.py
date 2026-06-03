@@ -43,7 +43,7 @@ def _make_client():
     ), "ollama"
 
 PROVIDER_MODELS = {
-    "ollama":    "llama3.2:3b",
+    "ollama":    os.getenv("OLLAMA_MODEL", "llama3.2:4k"),
     "groq":      "llama-3.3-70b-versatile",
     "anthropic": "claude-sonnet-4-6",
 }

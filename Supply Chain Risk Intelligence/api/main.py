@@ -616,3 +616,71 @@ async def supply_shock_scenarios() -> Dict[str, Any]:
 @app.get("/health")
 async def health_check() -> Dict[str, str]:
     return {"status": "healthy", "service": "Financial Distress & Supply Chain Risk API"}
+
+
+# ---------------------------------------------------------------------------
+# AI-Powered Endpoints (Llama via Ollama)
+# ---------------------------------------------------------------------------
+
+from src.llm_insights import generate_risk_narrative as _llm_narrative, analyze_filing_text as _llm_filing
+from pydantic import BaseModel as _BM
+
+
+class RiskNarrativeRequest(_BM):
+    company_name: Optional[str] = "Unknown Company"
+    distress_prob_3m: float = 0.0
+    distress_prob_12m: float = 0.0
+    altman_zscore: Optional[float] = None
+    debt_to_equity: Optional[float] = None
+    current_ratio: Optional[float] = None
+    revenue_growth_pct: Optional[float] = None
+    sector: Optional[str] = None
+
+
+class FilingAnalysisRequest(_BM):
+    company_name: Optional[str] = "Unknown Company"
+    filing_text: str
+
+
+@app.post(
+    "/ai/risk_narrative",
+    tags=["AI Insights"],
+    summary="Plain-English risk assessment via Llama (local, free)",
+)
+def ai_risk_narrative(req: RiskNarrativeRequest):
+    """
+    Converts quantitative financial distress scores into a plain-English
+    credit committee briefing using llama3.2:4k running locally via Ollama.
+    """
+    data = {
+        "Company":                    req.company_name,
+        "Sector":                     req.sector or "n/a",
+        "3-month distress probability": f"{req.distress_prob_3m:.1%}",
+        "12-month distress probability": f"{req.distress_prob_12m:.1%}",
+        "Altman Z-Score":             req.altman_zscore or "n/a",
+        "Debt-to-Equity":             req.debt_to_equity or "n/a",
+        "Current Ratio":              req.current_ratio or "n/a",
+        "Revenue Growth":             f"{req.revenue_growth_pct:.1%}" if req.revenue_growth_pct else "n/a",
+    }
+    narrative = _llm_narrative(data)
+    return {
+        "company":      req.company_name,
+        "narrative":    narrative,
+        "model_used":   "llama3.2:4k (Ollama local)",
+    }
+
+
+@app.post(
+    "/ai/filing_analysis",
+    tags=["AI Insights"],
+    summary="Extract structured risk factors from SEC filing text via Llama",
+)
+def ai_filing_analysis(req: FilingAnalysisRequest):
+    """
+    Extracts supply chain dependencies, risk factors, and concentration risks
+    from raw SEC 10-K/10-Q filing text using llama3.2:4k.
+    """
+    result = _llm_filing(req.filing_text)
+    result["company"]    = req.company_name
+    result["model_used"] = "llama3.2:4k (Ollama local)"
+    return result
